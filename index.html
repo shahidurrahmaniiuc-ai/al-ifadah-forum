@@ -1,160 +1,257 @@
 <!doctype html>
 <html lang="bn">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>আল ইফাদাহ ফোরাম | সদস্য ও আর্থিক ড্যাশবোর্ড</title>
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0b5d3b">
+<title>আল-ইফাদাহ ফোরাম</title>
 <style>
-:root{--green:#14583e;--deep:#0c3929;--gold:#d7b45a;--cream:#f7f6ef;--ink:#1e3028;--muted:#718078;--line:#e4e9e2;--white:#fff;--red:#b84c43}
-*{box-sizing:border-box}body{margin:0;background:var(--cream);color:var(--ink);font-family:'Noto Sans Bengali',sans-serif}button,input,select{font:inherit}button{cursor:pointer}.layout{display:grid;grid-template-columns:255px minmax(0,1fr);min-height:100vh}.sidebar{background:var(--deep);color:white;padding:25px 16px;display:flex;flex-direction:column;gap:22px}.brand{display:flex;gap:12px;align-items:center;padding:0 8px 22px;border-bottom:1px solid #ffffff22}.logo{height:45px;width:45px;border:2px solid var(--gold);border-radius:14px;display:grid;place-items:center;color:var(--gold);font-size:23px;font-weight:800}.brand strong{display:block;font-size:16px}.brand small{color:#c5d6cc;font-size:11px}.nav-label{font-size:11px;letter-spacing:1px;color:#94b3a3;padding:0 12px}.nav{display:grid;gap:5px}.nav button{border:0;background:transparent;color:#d8e4dd;text-align:left;padding:12px;border-radius:10px;font-size:13px}.nav button.active,.nav button:hover{background:#ffffff18;color:#fff}.nav button span{display:inline-block;width:26px;color:var(--gold)}.side-note{margin-top:auto;border:1px solid #ffffff24;border-radius:12px;padding:13px;font-size:11px;color:#c4d5cb;line-height:1.8}.main{min-width:0}.topbar{height:76px;background:white;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 32px;gap:15px}.crumb{font-size:13px;color:var(--muted)}.topright{display:flex;align-items:center;gap:12px}.demo{background:#fff7dd;border:1px solid #ead38a;color:#80631b;border-radius:20px;padding:6px 11px;font-size:11px}.avatar{background:#e4eee5;color:var(--green);height:37px;width:37px;border-radius:50%;display:grid;place-items:center;font-weight:800}.content{padding:28px 32px;max-width:1500px;margin:auto}.page{display:none}.page.active{display:block}.eyebrow{color:#a27b22;font-size:12px;font-weight:700}.heading{display:flex;justify-content:space-between;align-items:flex-start;gap:15px;margin-bottom:22px}.heading h1{font-size:25px;margin:5px 0 7px;color:var(--deep)}.heading p{margin:0;color:var(--muted);font-size:13px}.btn{border:0;border-radius:9px;background:var(--green);color:white;padding:11px 15px;font-size:12px;font-weight:700}.btn.secondary{background:white;color:var(--green);border:1px solid var(--line)}.stats{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:15px;margin:22px 0}.stat{background:white;border:1px solid var(--line);border-radius:14px;padding:18px;min-width:0}.stat-top{display:flex;align-items:center;justify-content:space-between;color:var(--muted);font-size:12px;gap:8px}.stat-icon{height:34px;width:34px;border-radius:10px;background:#eaf2eb;color:var(--green);display:grid;place-items:center;font-size:17px}.stat strong{display:block;font-size:25px;margin:12px 0 4px;color:var(--deep)}.stat small{color:var(--muted);font-size:11px}.up{color:var(--green)!important}.panel{background:white;border:1px solid var(--line);border-radius:14px;padding:20px;margin-bottom:17px;min-width:0}.panel-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px}.panel h3{margin:0;color:var(--deep);font-size:15px}.panel-head small{color:var(--muted);font-size:11px}.twocol{display:grid;grid-template-columns:1.2fr .8fr;gap:17px}.bars{display:flex;align-items:flex-end;gap:12px;height:175px;padding:15px 5px 0;border-bottom:1px solid var(--line)}.bar-col{height:100%;display:flex;flex:1;flex-direction:column;align-items:center;justify-content:flex-end;gap:8px;font-size:10px;color:var(--muted)}.bar{width:min(34px,70%);background:#a8c9ae;border-radius:6px 6px 0 0;min-height:5px}.bar.current{background:var(--green)}.bar-label{padding-bottom:8px}.progress-row{display:flex;justify-content:space-between;font-size:12px;margin:18px 0 8px}.progress{height:9px;background:#edf0e9;border-radius:20px;overflow:hidden}.progress div{height:100%;background:var(--gold);border-radius:20px}.legend{display:flex;gap:15px;flex-wrap:wrap;font-size:11px;color:var(--muted);margin-top:12px}.dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--green);margin-right:6px}.dot.gold{background:var(--gold)}.table-wrap{overflow:auto}table{width:100%;border-collapse:collapse;white-space:nowrap;font-size:12px}th{text-align:left;color:var(--muted);background:#fafbf8;font-weight:600}th,td{padding:13px 12px;border-bottom:1px solid #edf0ea}td{color:#35463d}.person{display:flex;align-items:center;gap:9px}.person .avatar{height:32px;width:32px;font-size:11px}.pill{padding:5px 9px;border-radius:20px;font-size:10px;background:#e8f4e9;color:#27633d}.pill.pending{background:#fff4d6;color:#886619}.filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:15px}.filters input,.filters select,.field input,.field select{padding:10px 12px;border:1px solid var(--line);border-radius:9px;background:white;color:var(--ink);min-width:0}.filters input{flex:1;min-width:180px}.empty-note{font-size:12px;color:var(--muted);line-height:1.8}.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}.field{display:grid;gap:6px;font-size:12px;color:var(--muted)}.field input,.field select{width:100%}.form-actions{display:flex;gap:9px;margin-top:15px}.notice{background:#fff8e3;border:1px solid #f0dfaa;padding:13px;border-radius:10px;font-size:12px;line-height:1.8;color:#745c20}.footer{text-align:center;color:#8b978e;font-size:11px;padding:20px}.mobile-menu{display:none}.login-card{max-width:450px;margin:30px auto;background:white;border:1px solid var(--line);padding:28px;border-radius:18px}.login-card h2{color:var(--deep)}.login-card p{font-size:12px;color:var(--muted);line-height:1.8}.login-card .field{margin:13px 0}.toast{position:fixed;bottom:20px;right:20px;background:var(--deep);color:white;padding:12px 17px;border-radius:10px;display:none;font-size:12px;box-shadow:0 8px 30px #0002}.toast.show{display:block}
-@media(max-width:1050px){.layout{grid-template-columns:215px minmax(0,1fr)}.content{padding:22px}.topbar{padding:0 22px}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.twocol{grid-template-columns:1fr}}
-@media(max-width:700px){.layout{display:block}.sidebar{display:none;position:fixed;z-index:10;inset:0 auto 0 0;width:270px;box-shadow:0 0 0 100vw #0005}.sidebar.open{display:flex}.topbar{height:65px;padding:0 15px}.mobile-menu{display:inline-grid;place-items:center;border:1px solid var(--line);background:white;border-radius:9px;width:38px;height:38px}.crumb{display:none}.content{padding:19px 14px}.heading{align-items:flex-start;flex-direction:column}.heading h1{font-size:22px}.stats{gap:10px}.stat{padding:13px}.stat strong{font-size:20px}.stat-top{font-size:10px}.stat-icon{height:29px;width:29px}.panel{padding:15px}.form-grid{grid-template-columns:1fr}.topright .demo{display:none}.topbar{justify-content:flex-start}.topright{margin-left:auto}.bars{gap:5px}.bar-col{font-size:9px}}
-.annual-table{min-width:1120px}.annual-table th,.annual-table td{text-align:center;padding:9px 7px}.annual-table th:first-child,.annual-table td:first-child,.annual-table th:nth-child(2),.annual-table td:nth-child(2){text-align:left;position:sticky;background:white;z-index:1}.annual-table th:first-child,.annual-table td:first-child{left:0;min-width:185px}.annual-table th:nth-child(2),.annual-table td:nth-child(2){left:185px;min-width:105px}.annual-table thead th{background:#f5f8f3;position:sticky;top:0;z-index:2}.annual-table thead th:first-child,.annual-table thead th:nth-child(2){z-index:3;background:#f5f8f3}.annual-table input[type=checkbox]{width:19px;height:19px;accent-color:var(--green);cursor:pointer}.annual-table .paid-cell{background:#f0f7ef}.annual-table .amount-btn{border:1px solid var(--line);background:#fff;border-radius:6px;padding:4px;font-size:10px;color:var(--green);white-space:nowrap}.annual-table tfoot td{background:#f7f8f2;font-weight:700}.annual-table .sum{font-size:10px;white-space:nowrap}@media(max-width:700px){.annual-table th:first-child,.annual-table td:first-child{min-width:145px}.annual-table th:nth-child(2),.annual-table td:nth-child(2){left:145px;min-width:90px}}@media print{.sidebar,.topbar,.btn,.filters,.footer,.notice{display:none!important}.content{padding:0}.page{display:none!important}#page-deposits{display:block!important}.annual-table{min-width:0;font-size:8px}.annual-table th,.annual-table td{padding:3px}}
-
-.hero-banner{position:relative;overflow:hidden;background:linear-gradient(120deg,#0c3929,#176347 70%,#267653);color:#fff;border-radius:18px;padding:28px 30px;margin-bottom:24px;border:1px solid #d7b45a;box-shadow:0 12px 30px #123b2812}.hero-banner:after{content:"إ";position:absolute;right:26px;top:-26px;font-size:150px;font-weight:800;color:#ffffff0d;line-height:1}.hero-banner .bismillah{color:#e8d08b;font-size:14px;letter-spacing:.3px;margin-bottom:10px}.hero-banner h2{font-size:clamp(24px,3vw,36px);margin:0 0 9px;color:#fff;position:relative;z-index:1}.hero-banner p{margin:0;max-width:720px;color:#e0eee5;font-size:13px;line-height:1.9;position:relative;z-index:1}.hero-pills{display:flex;gap:8px;flex-wrap:wrap;margin-top:17px;position:relative;z-index:1}.hero-pills span{border:1px solid #d7b45a88;color:#f3e5b5;border-radius:24px;padding:6px 10px;font-size:11px}.value-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.value-card{background:#fff;border:1px solid var(--line);border-radius:13px;padding:17px}.value-card strong{display:block;color:var(--green);margin-bottom:7px}.value-card p{margin:0;color:var(--muted);font-size:12px;line-height:1.9}.article-list{display:grid;gap:12px}.article-card{background:white;border:1px solid var(--line);border-radius:12px;padding:16px 18px}.article-card h3{font-size:14px;color:var(--deep);margin:0 0 7px}.article-card p,.article-card li{font-size:12px;color:#53635a;line-height:1.9}.article-card p{margin:0}.article-card ul{margin:6px 0 0;padding-left:22px}.download-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}.download-link{display:inline-flex;align-items:center;gap:8px;padding:11px 14px;border-radius:9px;background:var(--green);color:#fff;text-decoration:none;font-size:12px;font-weight:700}.download-link.alt{background:#fff;color:var(--green);border:1px solid var(--line)}.rule-note{border-left:4px solid var(--gold);background:#fff9e8;padding:12px 14px;color:#725d24;border-radius:0 9px 9px 0;font-size:12px;line-height:1.9;margin:14px 0}.mini-kpi{display:flex;gap:10px;flex-wrap:wrap}.mini-kpi span{background:#edf5ee;color:#21583c;border-radius:9px;padding:9px 12px;font-size:12px;font-weight:700}
-@media(max-width:700px){.hero-banner{padding:22px 18px}.hero-banner:after{right:8px;font-size:100px}.value-grid{grid-template-columns:1fr}}
-
-</style></head>
+:root{--green:#0b5d3b;--green2:#137a50;--gold:#d8b45a;--bg:#f4f7f3;--ink:#1e2b24;--muted:#647168;--line:#dce5dd;--white:#fff;--red:#a52b2b}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Noto Sans Bengali",sans-serif;line-height:1.55}
+header{background:linear-gradient(120deg,var(--green),#083f2a);color:#fff;padding:24px 16px;border-bottom:5px solid var(--gold)}
+.wrap{max-width:1100px;margin:auto;padding:0 16px}header h1{margin:0;font-size:clamp(1.5rem,4vw,2.2rem)}header p{margin:6px 0 0;color:#e7f2eb}
+nav{display:flex;gap:8px;flex-wrap:wrap;padding:14px 0}
+button,.tab{border:0;border-radius:9px;padding:10px 14px;background:var(--green);color:white;font-weight:650;cursor:pointer;font-size:.95rem}
+button:hover,.tab:hover{background:var(--green2)}button.secondary{background:#e6eee8;color:var(--green)}button.danger{background:var(--red)}button:disabled{opacity:.5;cursor:not-allowed}
+main{padding:4px 0 32px}.panel{background:var(--white);border:1px solid var(--line);border-radius:14px;padding:18px;margin:12px 0;box-shadow:0 3px 12px #102b1b08}
+h2{margin:0 0 12px;color:var(--green);font-size:1.25rem}h3{margin:16px 0 8px;font-size:1.05rem}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px}.stat{background:#f0f7f1;border:1px solid var(--line);border-radius:12px;padding:14px}.stat small{display:block;color:var(--muted)}.stat strong{font-size:1.35rem;color:var(--green)}
+label{display:block;font-weight:600;font-size:.92rem;margin:8px 0 4px}input,select,textarea{width:100%;border:1px solid #cbd8ce;border-radius:8px;padding:10px;font:inherit;background:#fff;color:var(--ink)}textarea{min-height:75px;resize:vertical}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.status{padding:10px 12px;border-radius:8px;background:#eef4ef;margin:10px 0;overflow-wrap:anywhere}.status.error{background:#fff0f0;color:#8e2020}.hidden{display:none!important}.table-wrap{overflow:auto}table{border-collapse:collapse;width:100%;min-width:480px}th,td{text-align:left;padding:10px;border-bottom:1px solid var(--line);vertical-align:top}th{background:#edf4ee;color:var(--green)}.muted{color:var(--muted);font-size:.9rem}.pill{display:inline-block;border-radius:999px;background:#e8f1e9;color:var(--green);padding:3px 9px;font-size:.8rem}.footer{padding:20px 0 32px;color:var(--muted);font-size:.85rem}
+@media(max-width:520px){.panel{padding:14px}nav button{flex:1 1 42%}}
+</style>
+</head>
 <body>
-<div class="layout">
-<aside class="sidebar" id="sidebar">
- <div class="brand"><div class="logo">إ</div><div><strong>আল-ইফাদাহ ফোরাম</strong><small>আমানত • আত্মনির্ভরতা • কল্যাণ</small></div></div>
- <div class="nav-label">প্রধান মেনু</div>
- <nav class="nav" id="nav">
- <button class="active" data-page="dashboard"><span>▦</span> ড্যাশবোর্ড</button>
- <button data-page="about"><span>✦</span> পরিচিতি ও লক্ষ্য</button>
- <button data-page="constitution"><span>▤</span> গঠনতন্ত্র</button>
- <button data-page="application"><span>✎</span> সদস্যপদ আবেদন</button>
- <button data-page="members"><span>♙</span> সদস্য তালিকা</button>
- <button data-page="deposits"><span>৳</span> মাসিক জমা</button>
- <button data-page="finance"><span>⇄</span> আয়-ব্যয়</button>
- <button data-page="investments"><span>◈</span> বিনিয়োগ</button>
- <button data-page="plans"><span>◎</span> ভবিষ্যৎ পরিকল্পনা</button>
- <button data-page="reports"><span>▤</span> রিপোর্ট</button>
- <button data-page="login"><span>♙</span> লগইন / ভূমিকা</button>
- </nav>
- <div class="side-note">স্বচ্ছতা • আস্থা • সম্মিলিত অগ্রগতি<br>এই ওয়েবসাইটটি বর্তমানে ডেমো সংস্করণ।</div>
-</aside>
-<main class="main">
-<header class="topbar"><button class="mobile-menu" id="menuBtn" aria-label="মেনু">☰</button><div class="crumb">আল ইফাদাহ ফোরাম / <span id="crumb">ড্যাশবোর্ড</span></div><div class="topright"><span class="demo">● ডেমো ডেটা</span><div class="avatar">আফ</div></div></header>
-<div class="content">
-<section class="page active" id="page-dashboard">
- <div class="hero-banner"><div class="bismillah">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div><h2>আল-ইফাদাহ ফোরাম (আইএফ)</h2><p>এশায়াতুস সুন্নাহ মাদ্রাসা ও এতিমখানার প্রাক্তন ছাত্রদের উদ্যোগে—শরীয়াহ্‌-সম্মত সঞ্চয়, হালাল বিনিয়োগ, পারস্পরিক সহযোগিতা ও মানবকল্যাণের একটি সম্মিলিত প্রয়াস।</p><div class="hero-pills"><span>সুদমুক্ত নীতি</span><span>স্বচ্ছতা ও আমানতদারিতা</span><span>যৌথ উন্নয়ন</span><span>সমাজসেবা</span></div></div>
- <div class="heading"><div><div class="eyebrow">স্বাগতম</div><h1>ফোরামের সারসংক্ষেপ</h1><p>আপনার সঞ্চয় ও বিনিয়োগ কার্যক্রম এক নজরে দেখুন।</p></div><button class="btn" onclick="go('reports')">রিপোর্ট দেখুন ↗</button></div>
- <div class="stats">
-  <div class="stat"><div class="stat-top">মোট সদস্য <span class="stat-icon">♙</span></div><strong>২৪ জন</strong><small class="up">সক্রিয় সদস্য</small></div>
-  <div class="stat"><div class="stat-top">বরাদ্দ ইউনিট <span class="stat-icon">▦</span></div><strong>৫০ / ১০০</strong><small>আরও ৫০টি ইউনিট অবশিষ্ট</small></div>
-  <div class="stat"><div class="stat-top">প্রকৃত মোট জমা <span class="stat-icon">৳</span></div><strong>৳ ৩৮,৫০০</strong><small>ডেমো হিসাব — বাস্তব তথ্য নয়</small></div>
-  <div class="stat"><div class="stat-top">চলমান বিনিয়োগ <span class="stat-icon">◈</span></div><strong>৳ ২০,০০০</strong><small>ডেমো হিসাব — যাচাই প্রয়োজন</small></div>
- </div>
- <div class="twocol">
-  <div class="panel"><div class="panel-head"><h3>মাসিক জমার চিত্র</h3><small>শেষ ৬ মাস · ডেমো</small></div><div class="bars"><div class="bar-col"><div class="bar" style="height:38%"></div><span class="bar-label">মে</span></div><div class="bar-col"><div class="bar" style="height:56%"></div><span class="bar-label">জুন</span></div><div class="bar-col"><div class="bar" style="height:48%"></div><span class="bar-label">জুলা</span></div><div class="bar-col"><div class="bar" style="height:70%"></div><span class="bar-label">আগ</span></div><div class="bar-col"><div class="bar" style="height:63%"></div><span class="bar-label">সেপ্টে</span></div><div class="bar-col"><div class="bar current" style="height:84%"></div><span class="bar-label">অক্টো</span></div></div><div class="legend"><span><i class="dot"></i>মাসিক জমা (প্রতীকী চিত্র)</span></div></div>
-  <div class="panel"><div class="panel-head"><h3>ইউনিট অগ্রগতি</h3><small>লক্ষ্যমাত্রা</small></div><div class="progress-row"><span>বরাদ্দ ইউনিট</span><b>৫০%</b></div><div class="progress"><div style="width:50%"></div></div><div class="progress-row"><span>অবশিষ্ট ইউনিট</span><b>৫০টি</b></div><div class="progress"><div style="width:50%;background:#d9e3d8"></div></div><div class="notice" style="margin-top:18px">প্রতি ইউনিট: <b>৳ ১,০০০</b><br>১০০ ইউনিটের পরিকল্পিত মূল্য: <b>৳ ১,০০,০০০</b><br>এটি প্রকৃত জমার সমান নয়।</div></div>
- </div>
- <div class="panel"><div class="panel-head"><h3>সাম্প্রতিক লেনদেন</h3><button class="btn secondary" onclick="go('deposits')">সব দেখুন</button></div><div class="table-wrap"><table><thead><tr><th>সদস্য</th><th>তারিখ</th><th>ধরন</th><th>পরিমাণ</th><th>অবস্থা</th></tr></thead><tbody><tr><td>মো. আরিফ হাসান</td><td>০৫ অক্টোবর ২০২৬</td><td>মাসিক জমা</td><td>৳ ১,০০০</td><td><span class="pill">সম্পন্ন</span></td></tr><tr><td>মো. সাইফুল ইসলাম</td><td>০৩ অক্টোবর ২০২৬</td><td>মাসিক জমা</td><td>৳ ২,০০০</td><td><span class="pill">সম্পন্ন</span></td></tr><tr><td>মো. নাসির উদ্দিন</td><td>০১ অক্টোবর ২০২৬</td><td>মাসিক জমা</td><td>৳ ১,০০০</td><td><span class="pill pending">পর্যালোচনা</span></td></tr></tbody></table></div></div>
+<header><div class="wrap">
+  <h1>আল-ইফাদাহ ফোরাম</h1>
+  <p>সদস্য ব্যবস্থাপনা · জমা · বিনিয়োগ · পরিকল্পনা</p>
+</div></header>
+<div class="wrap">
+<nav aria-label="প্রধান মেনু">
+  <button class="secondary" onclick="showSection('home')">ড্যাশবোর্ড</button>
+  <button class="secondary" onclick="showSection('members')">সদস্য</button>
+  <button class="secondary" onclick="showSection('deposits')">জমা</button>
+  <button class="secondary" onclick="showSection('investments')">বিনিয়োগ</button>
+  <button class="secondary" onclick="showSection('plans')">পরিকল্পনা</button>
+  <button class="secondary" onclick="showSection('admin')">Admin লগইন</button>
+</nav>
+<div id="globalStatus" class="status" role="status">ডেটাবেস সংযোগ পরীক্ষা করা হচ্ছে…</div>
+<main>
+<section id="home" class="section">
+  <div class="panel"><h2>স্বাগতম</h2><p>আল-ইফাদাহ ফোরামের অনলাইন ব্যবস্থাপনা প্যানেল। ডেটাবেস থেকে তথ্য দেখতে নিচের তালিকা ব্যবহার করুন।</p>
+    <div class="stats">
+      <div class="stat"><small>সদস্য</small><strong id="memberCount">—</strong></div>
+      <div class="stat"><small>জমার রেকর্ড</small><strong id="depositCount">—</strong></div>
+      <div class="stat"><small>বিনিয়োগ</small><strong id="investmentCount">—</strong></div>
+      <div class="stat"><small>পরিকল্পনা</small><strong id="planCount">—</strong></div>
+    </div>
+    <p class="muted">এই প্যানেল Supabase-এ থাকা রেকর্ড দেখায়; কোনো ডেমো তথ্যকে বাস্তব হিসাব হিসেবে দেখানো হয় না।</p>
+  </div>
 </section>
 
-<section class="page" id="page-about">
- <div class="heading"><div><div class="eyebrow">আমাদের পরিচয়</div><h1>পরিচিতি, লক্ষ্য ও উদ্দেশ্য</h1><p>আল-ইফাদাহ ফোরাম (আইএফ) · যাত্রা শুরু: ০১ সেপ্টেম্বর ২০২৬</p></div><button class="btn secondary" onclick="go('constitution')">গঠনতন্ত্র দেখুন ↗</button></div>
- <div class="panel"><div class="eyebrow">নামের তাৎপর্য</div><h3 style="margin:7px 0 10px">আল-ইফাদাহ — লাভবান করা, কল্যাণ পৌঁছানো ও উপকার করা</h3><p class="empty-note">সংগঠনটির উৎপত্তি এশায়াতুস সুন্নাহ মাদ্রাসা ও এতিমখানার প্রাক্তন ছাত্রদের সমিতি, বড়ধুশিয়া, বি-পাড়া, কুমিল্লা, চট্টগ্রাম থেকে। এটি একটি অরাজনৈতিক, সুদমুক্ত, শরীয়াহ্‌-সম্মত সামাজিক ও যৌথ-অর্থনৈতিক উন্নয়নমূলক সংগঠন। স্থায়ী ও অস্থায়ী কার্যালয় পরিচালনা পর্ষদের সিদ্ধান্ত অনুযায়ী নির্ধারিত হবে।</p></div>
- <div class="value-grid"><div class="value-card"><strong>আমাদের ভিশন</strong><p>ইসলামী শরীয়াহ্‌র সুদৃঢ় ভিত্তিতে একটি আত্মনির্ভরশীল ও সফল ব্যবসায়িক-সামাজিক প্ল্যাটফর্ম গড়ে তোলা।</p></div><div class="value-card"><strong>আমাদের মিশন</strong><p>নিয়মিত সঞ্চয়ভিত্তিক তহবিল গঠন, হালাল উপার্জনে বিনিয়োগ, যৌথ ব্যবসায়িক/শিক্ষা প্রতিষ্ঠান স্থাপন এবং লভ্যাংশ থেকে প্রাতিষ্ঠানিক সমাজসেবা।</p></div><div class="value-card"><strong>মূল মূল্যবোধ</strong><p>তাকওয়া, স্বচ্ছতা ও আমানতদারিতা, দ্বীনি ভ্রাতৃত্ব এবং উত্তম সমাজসেবা।</p></div></div>
- <div class="panel" style="margin-top:16px"><div class="panel-head"><h3>মূল লক্ষ্য ও কাজের ক্ষেত্র</h3><small>গঠনতন্ত্রের আলোকে</small></div><div class="article-list"><div class="article-card"><h3>১. সঞ্চয় ও আর্থিক শৃঙ্খলা</h3><p>প্রতি ইউনিটে মাসিক ১,০০০ টাকা; ন্যূনতম ১ ইউনিট এবং গঠনতন্ত্রে উল্লিখিত সর্বোচ্চ ৫ ইউনিট পর্যন্ত সঞ্চয়ের নীতি। মাসের ১–১৫ তারিখের মধ্যে জমা দেওয়ার বিধান।</p></div><div class="article-card"><h3>২. হালাল বিনিয়োগ ও যৌথ উদ্যোগ</h3><p>সুদভিত্তিক বিনিয়োগ পরিহার করে সুনির্দিষ্ট হালাল ব্যবসা, যৌথ উদ্যোগ ও শিক্ষাপ্রতিষ্ঠান প্রতিষ্ঠার সম্ভাবনা যাচাই করা। নতুন প্রকল্পে গঠনতন্ত্র অনুযায়ী সদস্যদের লিখিত সম্মতি নিতে হবে।</p></div><div class="article-card"><h3>৩. সমাজসেবা ও কল্যাণ</h3><p>এতিম ও অসহায়দের শিক্ষাবৃত্তি, চিকিৎসা সহায়তা, দুস্থদের স্বাবলম্বীকরণ এবং জনকল্যাণমূলক কাজে সাদকাহ/সমাজসেবা ফান্ড ব্যবহার করা।</p></div><div class="article-card"><h3>৪. জবাবদিহি ও সদস্য সুরক্ষা</h3><p>নিয়মিত হিসাব প্রকাশ, অর্ধবার্ষিক অভ্যন্তরীণ অডিট, বার্ষিক নিরপেক্ষ অডিট, ব্যক্তিগত তথ্যের গোপনীয়তা এবং সদস্যের মৃত্যু/স্থায়ী অক্ষমতায় নমিনি ও বৈধ ওয়ারিশের অধিকার সম্মান করা।</p></div></div></div>
- <div class="rule-note">ওয়েবসাইটে প্রকাশিত এই পরিচিতি গঠনতন্ত্রের সারাংশ। কোনো বিষয়ে ব্যাখ্যা বা সিদ্ধান্তের ক্ষেত্রে অনুমোদিত গঠনতন্ত্র ও সাধারণ সভার বৈধ সিদ্ধান্ত প্রাধান্য পাবে।</div>
-</section>
-<section class="page" id="page-constitution">
- <div class="heading"><div><div class="eyebrow">প্রাতিষ্ঠানিক নীতিমালা</div><h1>সংগঠনের গঠনতন্ত্র</h1><p>আল-ইফাদাহ ফোরাম (আইএফ) · কার্যক্রম শুরুর তারিখ: ০১/০৯/২০২৬ ইং</p></div></div>
- <div class="panel"><div class="panel-head"><h3>গঠনতন্ত্রের মূল ভিত্তি</h3><small>২৪টি ধারা · ৬টি অনুচ্ছেদ</small></div><p class="empty-note">নিচে আপনার সরবরাহ করা বাংলা গঠনতন্ত্রের অনুচ্ছেদ ও ধারাগুলোর ওয়েব-উপযোগী সূচি দেওয়া হলো। মূল PDF ডাউনলোড করে সম্পূর্ণ পাঠ, স্বাক্ষর পৃষ্ঠা এবং মূল বিন্যাস দেখুন।</p><div class="download-row"><a class="download-link" href="সংগঠনের-গঠনতন্ত্র.pdf" download>⇩ পূর্ণ গঠনতন্ত্র PDF</a><a class="download-link alt" href="সদস্যপদ-আবেদন-ফরম.pdf" download>⇩ সদস্যপদ আবেদন ফরম PDF</a></div></div>
- <div class="article-list">
- <div class="article-card"><h3>অনুচ্ছেদ ১ · পরিচিতি ও উদ্দেশ্য (ধারা ১–৩)</h3><ul><li>নাম: আল-ইফাদাহ ফোরাম (আইএফ); অর্থ—লাভবান করা, কল্যাণ পৌঁছানো বা উপকার করা।</li><li>অরাজনৈতিক, সুদমুক্ত, শরীয়াহ্‌-সম্মত সামাজিক ও যৌথ-অর্থনৈতিক উন্নয়নমূলক সংগঠন।</li><li>ভিশন: আত্মনির্ভরশীল ব্যবসায়িক-সামাজিক প্ল্যাটফর্ম; মিশন: সঞ্চয়, হালাল বিনিয়োগ, যৌথ উদ্যোগ ও সমাজসেবা।</li><li>সুদ, জুয়া, ধোঁকা ও অনির্দিষ্টতা নিষিদ্ধ; সংগঠনের নাম/ফান্ড রাজনৈতিক বা সমাজবিরোধী কাজে ব্যবহার করা যাবে না।</li></ul></div>
- <div class="article-card"><h3>অনুচ্ছেদ ২ · সদস্যপদ ও শৃঙ্খলা (ধারা ৪–৮)</h3><ul><li>গঠনতন্ত্রে বর্ণিত যোগ্যতা: ১৮ বছর বা তদূর্ধ্ব দ্বীনদার, বিশ্বস্ত ও আমানতদার মুসলিম পুরুষ; সদস্যপদ অনুমোদন ও সাধারণ সভার ২/৩ সমর্থনের বিধান।</li><li>ভর্তি ফি ৫০০ টাকা অফেরতযোগ্য; প্রয়োজনীয় ব্যাক-লগ সঞ্চয় পরিচালনা পর্ষদের সিদ্ধান্ত অনুযায়ী।</li><li>যুক্তিসঙ্গত কারণ ছাড়া টানা ৩ মাস সঞ্চয় না দিলে সদস্যপদ স্থগিত হতে পারে; গুরুতর শৃঙ্খলাভঙ্গে ৩/৪ ভোটে বাতিলের বিধান।</li><li>সাধারণ নিয়মে ৫ বছরের লক-ইন, পদত্যাগের ৬ মাসের নোটিশ এবং অনুমোদনের পর ৬–১২ মাসে মূলধন নিষ্পত্তির বিধান; বিশেষ আগাম অব্যাহতি ও ১০% ফি-সংক্রান্ত শর্ত মূল গঠনতন্ত্রে দেখুন।</li><li>নমিনি অর্থ গ্রহণের প্রতিনিধি; উত্তরাধিকার ইসলামী ফারায়েজ অনুযায়ী। মৃত্যু/স্থায়ী অক্ষমতায় লক-ইন ও এক্সিট ফি-র বিশেষ ছাড়ের বিধান রয়েছে।</li></ul></div>
- <div class="article-card"><h3>অনুচ্ছেদ ৩ · পরিচালনা পর্ষদ ও সভা (ধারা ৯–১১)</h3><ul><li>৪ সদস্যের কার্যকরী কমিটি: সভাপতি, সহ-সভাপতি, সাধারণ সম্পাদক ও অর্থ সম্পাদক/ক্যাশিয়ার; মেয়াদ ১ বছর।</li><li>কর্মকর্তাদের সাময়িক অনুপস্থিতিতে ভারপ্রাপ্ত দায়িত্ব এবং ৩ মাসের বেশি অনুপস্থিতিতে নতুন কর্মকর্তা নির্বাচনের বিধান।</li><li>প্রতি মাসে অন্তত ১টি সাধারণ সভা; সভার কোরাম ২/৩ সদস্য; জরুরি বিশেষ সভায় ৩ দিনের নোটিশ।</li></ul></div>
- <div class="article-card"><h3>অনুচ্ছেদ ৪ · আর্থিক পরিচালনা ও হিসাব (ধারা ১২–১৬)</h3><ul><li>প্রতি ইউনিটে মাসিক ১,০০০ টাকা; ন্যূনতম ১ ও সর্বোচ্চ ৫ ইউনিট; মাসের ১–১৫ তারিখে জমা।</li><li>প্রতি ৬ মাস অন্তর বিশেষ এককালীন আমানতের বিধান—পরিমাণ মূল নথিতে উদাহরণ হিসেবে ১০,০০০ টাকা/ইউনিট উল্লেখ আছে; কার্যকর করার আগে সাধারণ সভায় নিশ্চিত করা প্রয়োজন।</li><li>বিলম্ব ফি ২০০ টাকা সমাজসেবা ফান্ডে; স্বীকৃত ইসলামিক ব্যাংকে যৌথ হিসাব ও কমপক্ষে দুই দায়িত্বপ্রাপ্ত ব্যক্তির স্বাক্ষর।</li><li>মাসিক স্টেটমেন্ট, ছয় মাস অন্তর অভ্যন্তরীণ অডিট, বার্ষিক নিরপেক্ষ অডিট; জরুরি প্রয়োজনে সুদমুক্ত করজে হাসানা, অতিরিক্ত ফি/লাভ নিষিদ্ধ।</li></ul></div>
- <div class="article-card"><h3>অনুচ্ছেদ ৫ · বিনিয়োগ, সমাজসেবা ও ঝুঁকি (ধারা ১৭–২১)</h3><ul><li>সুদি ডিপিএস বা সুদভিত্তিক বিনিয়োগ নয়; হালাল ব্যবসায় বিনিয়োগ। নতুন প্রকল্পে অন্তত ৭০% সদস্যের লিখিত সম্মতির বিধান।</li><li>নিট লাভ বণ্টনের প্রস্তাবিত অনুপাত: সদস্যদের লভ্যাংশ ৬০–৭০%, পুনর্বিনিয়োগ ১৫–২০%, সমাজসেবা ১০–১৫%; অনুপাত চূড়ান্ত করার আগে মোট ১০০% হয় কি না তা অনুমোদিত সিদ্ধান্তে নিশ্চিত করা উচিত।</li><li>সমাজসেবা ফান্ড এতিম-অসহায়দের শিক্ষা, চিকিৎসা, স্বাবলম্বীকরণ ও জনকল্যাণে ব্যয় হবে; ব্যক্তিগত লাভে ব্যবহার নিষিদ্ধ।</li><li>লোকসান বিনিয়োগের অনুপাতে বহনের বিধান, ৫–১০% জরুরি সংরক্ষিত ফান্ড এবং স্বার্থের দ্বন্দ্বে সংশ্লিষ্ট ব্যক্তির ভোটে অংশ না নেওয়ার নীতি।</li></ul></div>
- <div class="article-card"><h3>অনুচ্ছেদ ৬ · প্রশাসনিক, আইনি ও মৌলিক সুরক্ষা (ধারা ২২–২৪)</h3><ul><li>প্রয়োজনে আলেম/বিশেষজ্ঞ নিয়ে পরামর্শক পর্ষদ; সদস্যের ব্যক্তিগত তথ্য, হিসাব, ক্যাশ বই ও রেজুলেশন নিরাপদে সংরক্ষণ।</li><li>ধারা ১.২, ৩.১, ৩.২ ও ১৬.২-কে গঠনতন্ত্রে মৌলিক/অপরিবর্তনীয় ধারা বলা হয়েছে। অন্যান্য সংশোধনে ৩/৪ সদস্যের উপস্থিতি ও সমর্থনের কথা উল্লেখ আছে।</li><li>বিলুপ্তির ক্ষেত্রে দায়-দেনা পরিশোধ, সদস্যদের মূল ফান্ড ফেরত এবং সমাজসেবা ফান্ড দাতব্য/জনকল্যাণমূলক প্রতিষ্ঠানে দানের বিধান।</li></ul></div>
- </div>
- <div class="rule-note"><b>গুরুত্বপূর্ণ—অনুমোদনের আগে স্পষ্ট করা দরকার:</b> ধারা ১২.৪-এ “প্রতি ৬ মাস অন্তর” ও “বছরে ১ বার” দুটোই লেখা আছে; লাভ বণ্টনের তিনটি শতাংশ-সীমার যোগফল একাধিকভাবে ১০০% ছাড়াতে পারে; ধারা ৯.১-এ “(N)” টাইপো আছে; ধারা ২৪.২-এ ৩/৪ উপস্থিতি ও সমর্থনের অর্থ আরও নির্দিষ্ট করা দরকার। এখানে এগুলো নীরবে বদলানো হয়নি—সাধারণ সভায় অনুমোদিত সংশোধন করে PDF-ও হালনাগাদ করুন। আইনগত/শরীয়াহ্‌ প্রয়োগের আগে যোগ্য উপদেষ্টার পরামর্শ নেওয়া উচিত।</div>
-</section>
-<section class="page" id="page-application">
- <div class="heading"><div><div class="eyebrow">সদস্য হতে আগ্রহী?</div><h1>সদস্যপদ আবেদন</h1><p>আসল আবেদনপত্র ডাউনলোড করুন এবং সংগঠনের নির্ধারিত পদ্ধতিতে জমা দিন।</p></div></div>
- <div class="panel"><div class="panel-head"><h3>সদস্যপদ আবেদন ফরম</h3><small>PDF নথি</small></div><p class="empty-note">আপনার সরবরাহ করা সদস্যপদ প্রাপ্তির আবেদন ফরম এখানে যুক্ত করা হয়েছে।</p><div class="download-row"><a class="download-link" href="সদস্যপদ-আবেদন-ফরম.pdf" download>⇩ আবেদন ফরম ডাউনলোড</a><a class="download-link alt" href="সংগঠনের-গঠনতন্ত্র.pdf" download>গঠনতন্ত্র পড়ুন ↗</a></div><div class="rule-note">এই ওয়েবসাইটটি বর্তমানে ডেমো। এখানে কোনো অনলাইন আবেদন জমা হয় না। নিরাপদ সার্ভার ও অনুমোদিত প্রবেশাধিকার তৈরি না হওয়া পর্যন্ত NID/পাসপোর্ট, ঠিকানা, নমিনি বা অন্য সংবেদনশীল তথ্য ওয়েবসাইটে লিখবেন না।</div></div>
- <div class="panel"><h3>আবেদনের আগে যাচাই করুন</h3><ul class="empty-note"><li>গঠনতন্ত্র ও সদস্যপদের শর্তাবলি পড়ুন।</li><li>ভর্তি ফি এবং প্রযোজ্য ব্যাক-লগ সঞ্চয়ের পরিমাণ কার্যকরী কমিটির কাছ থেকে নিশ্চিত করুন।</li><li>নমিনি ও উত্তরাধিকার সংক্রান্ত তথ্য নির্ভুলভাবে দিন এবং সংগঠনের কাছে নিরাপদে জমা দিন।</li><li>সদস্যপদ চূড়ান্ত হবে গঠনতন্ত্রে নির্ধারিত অনুমোদন প্রক্রিয়া সম্পন্ন হওয়ার পর।</li></ul></div>
+<section id="members" class="section hidden">
+  <div class="panel"><h2>সদস্য তালিকা</h2><p class="muted">এই তালিকা কেবল ডেটাবেসে থাকা সদস্যদের দেখায়।</p>
+    <div class="actions"><button onclick="loadMembers()">তথ্য রিফ্রেশ</button></div>
+    <div id="membersList" class="table-wrap"></div>
+  </div>
+  <div id="addMemberPanel" class="panel hidden"><h2>নতুন সদস্য যোগ (Admin)</h2>
+    <form id="memberForm">
+      <div class="grid">
+        <div><label for="memberName">পূর্ণ নাম *</label><input id="memberName" required maxlength="150"></div>
+        <div><label for="memberPhone">ফোন</label><input id="memberPhone" maxlength="40"></div>
+        <div><label for="memberEmail">ইমেইল</label><input id="memberEmail" type="email" maxlength="254"></div>
+      </div>
+      <div class="actions"><button type="submit">সদস্য সংরক্ষণ</button></div>
+    </form>
+  </div>
 </section>
 
-<section class="page" id="page-members">
- <div class="heading"><div><div class="eyebrow">সদস্য ব্যবস্থাপনা</div><h1>সদস্য তালিকা</h1><p>সদস্যের প্রাথমিক তথ্য ও ইউনিটের অবস্থা। নমুনা নামগুলো কাল্পনিক।</p></div><button class="btn" onclick="toast('ডেমো সংস্করণে নতুন সদস্য সংরক্ষণ করা যায় না।')">＋ সদস্য যোগ করুন</button></div>
- <div class="panel"><div class="filters"><input id="memberSearch" placeholder="নাম বা সদস্য আইডি দিয়ে খুঁজুন…" oninput="filterMembers()"><select id="unitFilter" onchange="filterMembers()"><option value="">সব ইউনিট</option><option value="2">২ ইউনিট</option><option value="1">১ ইউনিট</option></select></div><div class="table-wrap"><table id="memberTable"><thead><tr><th>সদস্য</th><th>আইডি</th><th>ফোন</th><th>ইউনিট</th><th>জমা (ডেমো)</th><th>অবস্থা</th></tr></thead><tbody id="membersTableBody"></tbody></table></div><p class="empty-note">প্রদর্শিত কয়েকটি সারি কেবল নমুনা। এখানে ২৪ জনের প্রকৃত সদস্যতথ্য এখনো যুক্ত করা হয়নি।</p></div>
+<section id="deposits" class="section hidden">
+  <div class="panel"><h2>সদস্যদের জমা</h2><div class="actions"><button onclick="loadDeposits()">রিফ্রেশ</button></div><div id="depositsList" class="table-wrap"></div></div>
+  <div id="addDepositPanel" class="panel hidden"><h2>জমা যোগ (Admin)</h2>
+    <form id="depositForm"><div class="grid">
+      <div><label for="depositMember">সদস্য *</label><select id="depositMember" required></select></div>
+      <div><label for="depositAmount">পরিমাণ *</label><input id="depositAmount" type="number" min="0.01" step="0.01" required></div>
+      <div><label for="depositDate">তারিখ</label><input id="depositDate" type="date"></div>
+      <div><label for="depositNote">নোট</label><input id="depositNote" maxlength="500"></div>
+    </div><div class="actions"><button type="submit">জমা সংরক্ষণ</button></div></form>
+  </div>
 </section>
-<section class="page" id="page-deposits">
-<div class="heading"><div><div class="eyebrow">বার্ষিক সঞ্চয় রেজিস্টার</div><h1>মাসিক জমা — বার্ষিক শিট</h1><p>Excel-এর মতো ১২ মাসের টিকবক্স। সদস্যের নাম ও আইডি তালিকা থেকে যুক্ত হবে।</p></div><button class="btn" onclick="exportAnnualCSV()">⇩ Excel/CSV ডাউনলোড</button></div>
-<div class="notice" style="margin-bottom:16px">ডেমো ডেটা এই ব্রাউজারে সংরক্ষিত হয়। অনলাইন ডেটাবেস বা একাধিক অ্যাডমিনের মধ্যে সিঙ্ক এখনো নেই।</div>
-<div class="panel"><div class="panel-head"><h3>হিসাবের বছর</h3><small id="yearStatus">বার্ষিক শিট</small></div><div class="filters"><label class="field">যেকোনো হিসাবের বছর<input id="annualYear" type="number" min="1900" max="9999" step="1" value="2026" onchange="renderAnnualSheet()"></label><label class="field">প্রতি ১ ইউনিটের মাসিক জমা (৳)<input id="monthlyDue" type="number" min="0" step="100" value="1000" onchange="renderAnnualSheet()"></label><button class="btn secondary" style="align-self:end" onclick="openSelectedYear()">বছরের শিট খুলুন</button><button class="btn secondary" style="align-self:end" onclick="addYearSheet()">＋ পরের বছরের শিট</button></div><div class="stats"><div class="stat"><div class="stat-top">সদস্য সংখ্যা</div><strong id="annualMemberCount">০</strong><small>সদস্য তালিকা থেকে</small></div><div class="stat"><div class="stat-top">মোট ইউনিট</div><strong id="annualUnitCount">০</strong><small>সব সদস্য মিলিয়ে</small></div><div class="stat"><div class="stat-top">মাসিক নির্ধারিত মোট</div><strong id="annualMonthlyExpected">৳ ০</strong><small>মোট ইউনিট × ইউনিটপ্রতি টাকা</small></div><div class="stat"><div class="stat-top">বার্ষিক জমা</div><strong id="annualTotal">৳ ০</strong><small>চিহ্নিত জমার মোট</small></div><div class="stat"><div class="stat-top">বকেয়া (আনুমানিক)</div><strong id="annualDue">৳ ০</strong><small>বার্ষিক নির্ধারিত টাকা − প্রকৃত জমা</small></div></div></div>
-<div class="panel"><div class="panel-head"><h3 id="annualTitle">বার্ষিক জমার চার্ট</h3><small>☑ = জমা সম্পন্ন</small></div><div class="table-wrap"><table id="annualTable" class="annual-table"><thead></thead><tbody></tbody><tfoot></tfoot></table></div><p class="empty-note">প্রতি মাসের নির্ধারিত জমা = সদস্যের ইউনিট সংখ্যা × ইউনিটপ্রতি মাসিক টাকা। ইউনিট সংখ্যার ঘরে ক্লিক করে সদস্যের ইউনিট পরিবর্তন করা যাবে। ☑ টিক দিলে ওই সদস্যের পুরো মাসিক নির্ধারিত টাকা জমা হিসেবে ধরা হবে; “পরিমাণ” চাপ দিয়ে বাস্তবে জমা দেওয়া আলাদা অঙ্কও লিখতে পারবেন। বছর ১৯০০–৯৯৯৯-এর মধ্যে যেকোনোটি লিখে শিট খুলতে পারবেন।</p></div>
-<div class="panel"><div class="panel-head"><h3>নতুন সদস্য যোগ করুন</h3><small>নাম ও আইডি চার্টে স্বয়ংক্রিয়ভাবে আসবে</small></div><form onsubmit="addMemberFromForm(event)"><div class="form-grid"><label class="field">সদস্যের নাম<input id="newMemberName" required placeholder="সদস্যের পূর্ণ নাম"></label><label class="field">সদস্য আইডি<input id="newMemberId" required placeholder="যেমন AIF-006"></label><label class="field">ফোন (ঐচ্ছিক)<input id="newMemberPhone" placeholder="ফোন নম্বর"></label><label class="field">ইউনিট সংখ্যা<input id="newMemberUnits" type="number" min="1" max="1000" step="1" value="1" required></label></div><div class="form-actions"><button class="btn" type="submit">＋ সদস্য যোগ ও শিট আপডেট</button></div></form></div></section>
-<section class="page" id="page-finance">
- <div class="heading"><div><div class="eyebrow">আর্থিক স্বচ্ছতা</div><h1>আয় ও ব্যয়</h1><p>ফোরামের অর্থপ্রবাহের নমুনা সারাংশ।</p></div><button class="btn" onclick="toast('আয়-ব্যয়ের এন্ট্রি সংরক্ষণ করতে বাস্তব ব্যাকএন্ড প্রয়োজন।')">＋ নতুন এন্ট্রি</button></div>
- <div class="stats"><div class="stat"><div class="stat-top">মোট আয়</div><strong>৳ ৪২,০০০</strong><small>ডেমো ডেটা</small></div><div class="stat"><div class="stat-top">মোট ব্যয়</div><strong>৳ ৩,৫০০</strong><small>ডেমো ডেটা</small></div><div class="stat"><div class="stat-top">নিট পার্থক্য</div><strong>৳ ৩৮,৫০০</strong><small>নমুনা হিসাব</small></div><div class="stat"><div class="stat-top">বিনিয়োগে আছে</div><strong>৳ ২০,০০০</strong><small>আলাদা শ্রেণিতে দেখানো</small></div></div>
- <div class="panel"><div class="panel-head"><h3>আয়-ব্যয়ের বিবরণ</h3><small>ডেমো তালিকা</small></div><div class="table-wrap"><table><thead><tr><th>তারিখ</th><th>বিবরণ</th><th>ধরন</th><th>পরিমাণ</th><th>রেফারেন্স</th></tr></thead><tbody><tr><td>০৫-১০-২০২৬</td><td>সদস্যদের মাসিক জমা</td><td><span class="pill">আয়</span></td><td>৳ ১২,৫০০</td><td>INC-026</td></tr><tr><td>০২-১০-২০২৬</td><td>প্রশাসনিক খরচ</td><td><span class="pill pending">ব্যয়</span></td><td>৳ ১,৫০০</td><td>EXP-014</td></tr><tr><td>০১-১০-২০২৬</td><td>অন্যান্য আয় (নমুনা)</td><td><span class="pill">আয়</span></td><td>৳ ২,০০০</td><td>INC-025</td></tr></tbody></table></div></div>
+
+<section id="investments" class="section hidden">
+  <div class="panel"><h2>বিনিয়োগের তালিকা</h2><div class="actions"><button onclick="loadInvestments()">রিফ্রেশ</button></div><div id="investmentsList" class="table-wrap"></div></div>
+  <div id="addInvestmentPanel" class="panel hidden"><h2>বিনিয়োগ যোগ (Admin)</h2>
+    <form id="investmentForm"><div class="grid">
+      <div><label for="investmentTitle">বিনিয়োগের নাম *</label><input id="investmentTitle" required maxlength="150"></div>
+      <div><label for="investmentAmount">পরিমাণ *</label><input id="investmentAmount" type="number" min="0.01" step="0.01" required></div>
+      <div><label for="investmentDate">তারিখ</label><input id="investmentDate" type="date"></div>
+      <div><label for="investmentNote">নোট</label><input id="investmentNote" maxlength="500"></div>
+    </div><div class="actions"><button type="submit">বিনিয়োগ সংরক্ষণ</button></div></form>
+  </div>
 </section>
-<section class="page" id="page-investments">
- <div class="heading"><div><div class="eyebrow">বিনিয়োগ ব্যবস্থাপনা</div><h1>বিনিয়োগ</h1><p>বিনিয়োগের মেয়াদ, প্রত্যাশিত ও প্রকৃত রিটার্ন আলাদাভাবে ট্র্যাক করুন।</p></div><button class="btn" onclick="toast('বিনিয়োগ সংরক্ষণ করতে ব্যাকএন্ড প্রয়োজন।')">＋ বিনিয়োগ যোগ করুন</button></div>
- <div class="stats"><div class="stat"><div class="stat-top">মোট বিনিয়োগ</div><strong>৳ ২০,০০০</strong><small>ডেমো ডেটা</small></div><div class="stat"><div class="stat-top">চলমান প্রকল্প</div><strong>২টি</strong><small>নমুনা রেকর্ড</small></div><div class="stat"><div class="stat-top">প্রত্যাশিত রিটার্ন</div><strong>৳ ২,০০০</strong><small>নিশ্চিত মুনাফা নয়</small></div><div class="stat"><div class="stat-top">প্রকৃত রিটার্ন</div><strong>৳ ০</strong><small>নমুনা রেকর্ড</small></div></div>
- <div class="panel"><div class="panel-head"><h3>বিনিয়োগের তালিকা</h3><small>সব তথ্য কাল্পনিক</small></div><div class="table-wrap"><table><thead><tr><th>প্রাপক / প্রকল্প</th><th>ঠিকানা</th><th>পরিমাণ</th><th>মেয়াদ</th><th>প্রত্যাশিত রিটার্ন</th><th>অবস্থা</th></tr></thead><tbody><tr><td>প্রকল্প আলফা</td><td>নমুনা ঠিকানা, বাংলাদেশ</td><td>৳ ১২,০০০</td><td>৬ মাস</td><td>৳ ১,২০০</td><td><span class="pill">চলমান</span></td></tr><tr><td>প্রকল্প বেটা</td><td>নমুনা ঠিকানা, বাংলাদেশ</td><td>৳ ৮,০০০</td><td>৩ মাস</td><td>৳ ৮০০</td><td><span class="pill pending">পর্যালোচনা</span></td></tr></tbody></table></div><p class="empty-note">প্রত্যাশিত রিটার্ন কেবল অনুমান; কোনো আর্থিক ফল নিশ্চিত নয়।</p></div>
+
+<section id="plans" class="section hidden">
+  <div class="panel"><h2>পরিকল্পনা</h2><div class="actions"><button onclick="loadPlans()">রিফ্রেশ</button></div><div id="plansList" class="table-wrap"></div></div>
+  <div id="addPlanPanel" class="panel hidden"><h2>পরিকল্পনা যোগ (Admin)</h2>
+    <form id="planForm"><div class="grid">
+      <div><label for="planTitle">শিরোনাম *</label><input id="planTitle" required maxlength="150"></div>
+      <div><label for="planTarget">লক্ষ্যমাত্রা</label><input id="planTarget" type="number" min="0" step="0.01" value="0"></div>
+      <div><label for="planStatus">অবস্থা</label><select id="planStatus"><option value="active">চলমান</option><option value="completed">সম্পন্ন</option><option value="paused">স্থগিত</option></select></div>
+    </div><label for="planDescription">বিবরণ</label><textarea id="planDescription" maxlength="2000"></textarea>
+    <div class="actions"><button type="submit">পরিকল্পনা সংরক্ষণ</button></div></form>
+  </div>
 </section>
-<section class="page" id="page-plans">
- <div class="heading"><div><div class="eyebrow">ভবিষ্যৎ লক্ষ্য</div><h1>ভবিষ্যৎ পরিকল্পনা</h1><p>ফোরামের লক্ষ্য ও অগ্রগতির নমুনা রোডম্যাপ।</p></div></div>
- <div class="panel"><div class="panel-head"><h3>পরিকল্পনার রোডম্যাপ</h3><small>প্রস্তাবিত ধাপ</small></div>
- <div class="progress-row"><span>১. সদস্য তথ্য যাচাই ও নীতিমালা</span><b>৭৫%</b></div><div class="progress"><div style="width:75%"></div></div>
- <div class="progress-row"><span>২. মাসিক জমার নিয়মিত রেকর্ড</span><b>৫০%</b></div><div class="progress"><div style="width:50%"></div></div>
- <div class="progress-row"><span>৩. বিনিয়োগ ঝুঁকি মূল্যায়ন</span><b>২৫%</b></div><div class="progress"><div style="width:25%"></div></div>
- <div class="progress-row"><span>৪. বার্ষিক প্রতিবেদন প্রকাশ</span><b>১০%</b></div><div class="progress"><div style="width:10%"></div></div>
- <p class="empty-note">এগুলো উদাহরণস্বরূপ অগ্রগতি; প্রকৃত ফোরাম অনুমোদন ছাড়া বাস্তব অবস্থা হিসেবে ব্যবহার করবেন না।</p></div>
+
+<section id="admin" class="section hidden">
+  <div class="panel"><h2>Admin লগইন</h2><p class="muted">আপনার Supabase Auth ইমেইল ও পাসওয়ার্ড ব্যবহার করুন। এখানে পাসওয়ার্ড সংরক্ষণ করা হয় না।</p>
+    <form id="loginForm"><div class="grid">
+      <div><label for="adminEmail">ইমেইল</label><input id="adminEmail" type="email" autocomplete="username" required></div>
+      <div><label for="adminPassword">পাসওয়ার্ড</label><input id="adminPassword" type="password" autocomplete="current-password" required></div>
+    </div><div class="actions"><button type="submit">লগইন</button><button class="secondary" type="button" onclick="logout()">লগআউট</button></div></form>
+    <div id="loginStatus" class="status" aria-live="polite">লগইন করা নেই।</div>
+  </div>
+  <div class="panel"><h2>নিরাপত্তা সংক্রান্ত নোট</h2><p>ডেটাবেসের RLS নীতিই আসল অনুমতি নিয়ন্ত্রণ করে। শুধু এই পৃষ্ঠার Admin বোতাম লুকানো নিরাপত্তার বিকল্প নয়। Admin অনুমতি যাচাই না হওয়া পর্যন্ত পরিবর্তনের ফর্ম দেখানো হবে না।</p></div>
 </section>
-<section class="page" id="page-reports">
- <div class="heading"><div><div class="eyebrow">হিসাবের সারাংশ</div><h1>রিপোর্ট</h1><p>আর্থিক তথ্য পর্যালোচনা ও রিপোর্ট প্রিন্ট করার নমুনা ভিউ।</p></div><button class="btn" onclick="window.print()">⤓ প্রিন্ট / PDF</button></div>
- <div class="stats"><div class="stat"><div class="stat-top">পরিকল্পিত ইউনিট মূল্য</div><strong>৳ ১,০০,০০০</strong><small>১০০ × ৳ ১,০০০</small></div><div class="stat"><div class="stat-top">বরাদ্দ ইউনিট মূল্য</div><strong>৳ ৫০,০০০</strong><small>৫০ × ৳ ১,০০০</small></div><div class="stat"><div class="stat-top">প্রকৃত জমা</div><strong>৳ ৩৮,৫০০</strong><small>ডেমো ডেটা</small></div><div class="stat"><div class="stat-top">অবশিষ্ট বরাদ্দ</div><strong>৫০ ইউনিট</strong><small>লক্ষ্যমাত্রার বিপরীতে</small></div></div>
- <div class="panel"><div class="panel-head"><h3>আর্থিক প্রতিবেদন — সারাংশ</h3><small>ডেমো ডেটা · অক্টোবর ২০২৬</small></div><div class="table-wrap"><table><thead><tr><th>বিষয়</th><th>পরিমাণ</th><th>নোট</th></tr></thead><tbody><tr><td>পরিকল্পিত মোট ইউনিট মূল্য</td><td>৳ ১,০০,০০০</td><td>লক্ষ্যমাত্রা, প্রকৃত জমা নয়</td></tr><tr><td>বরাদ্দ ইউনিটের মূল্য</td><td>৳ ৫০,০০০</td><td>৫০টি ইউনিট × ৳১,০০০</td></tr><tr><td>প্রকৃত জমা</td><td>৳ ৩৮,৫০০</td><td>নমুনা হিসাব</td></tr><tr><td>নমুনা মোট ব্যয়</td><td>৳ ৩,৫০০</td><td>বাস্তব খতিয়ান নয়</td></tr><tr><td>চলমান বিনিয়োগ</td><td>৳ ২০,০০০</td><td>নমুনা হিসাব</td></tr></tbody></table></div></div>
- <div class="notice">গুরুত্বপূর্ণ: প্রকৃত আর্থিক সিদ্ধান্ত বা সদস্যদের সঙ্গে শেয়ার করার আগে সব সংখ্যা, লেনদেন ও অনুমোদিত রিপোর্ট যাচাই করে ডেমো ডেটা প্রতিস্থাপন করুন।</div>
-</section>
-<section class="page" id="page-login">
- <div class="heading"><div><div class="eyebrow">অ্যাকাউন্ট প্রবেশ</div><h1>লগইন ও ব্যবহারকারীর ভূমিকা</h1><p>এই অংশটি কেবল UI প্রদর্শনের জন্য। বাস্তব নিরাপদ লগইন এখনো যুক্ত নয়।</p></div></div>
- <div class="login-card"><div class="logo">إ</div><h2>আল ইফাদাহ ফোরামে প্রবেশ</h2><p>আপনার অনুমোদিত অ্যাকাউন্ট দিয়ে প্রবেশের স্ক্রিনের নমুনা। বাস্তব পাসওয়ার্ড এখানে লিখবেন না।</p><form onsubmit="event.preventDefault();toast('এটি ডেমো স্ক্রিন—বাস্তব লগইন সক্রিয় নয়।')"><label class="field">ইমেইল / সদস্য আইডি<input type="text" placeholder="যেমন: AIF-001" autocomplete="off"></label><label class="field">পাসওয়ার্ড<input type="password" placeholder="ডেমো ফিল্ড" autocomplete="off"></label><label class="field">ডেমো ভিউ নির্বাচন<select id="role"><option value="member">সাধারণ সদস্য — শুধু দেখা</option><option value="admin">অ্যাডমিন — ব্যবস্থাপনা ভিউ</option></select></label><button class="btn" type="submit" style="width:100%;margin-top:8px">প্রবেশ করুন</button></form><div class="notice" style="margin-top:16px">অ্যাডমিন: সদস্য ও আর্থিক তথ্য ব্যবস্থাপনার নকশা।<br>সদস্য: অনুমোদিত তথ্য শুধু দেখা।<br>এই ডেমোতে কোনো বাস্তব অনুমতি বা নিরাপত্তা কার্যকর নেই।</div></div>
-</section>
-<div class="footer">© আল-ইফাদাহ ফোরাম (আইএফ) · ওয়েবসাইট ডেমো · বাস্তব হিসাব/লগইন এখনো সক্রিয় নয়</div>
-</div></main></div><div class="toast" id="toast"></div>
-<script>
-const names={dashboard:'ড্যাশবোর্ড',about:'পরিচিতি ও লক্ষ্য',constitution:'গঠনতন্ত্র',application:'সদস্যপদ আবেদন',members:'সদস্য তালিকা',deposits:'মাসিক জমা',finance:'আয়-ব্যয়',investments:'বিনিয়োগ',plans:'ভবিষ্যৎ পরিকল্পনা',reports:'রিপোর্ট',login:'লগইন / ভূমিকা'};
-const KEY='alIfadahAnnualDemoV3',MONTHS=['জানু','ফেব্রু','মার্চ','এপ্রিল','মে','জুন','জুলাই','আগস্ট','সেপ্টে','অক্টো','নভে','ডিসে'];
-function fresh(){return {members:[{id:'AIF-001',name:'মো. আরিফ হাসান',phone:'০৫X-XXX-১০০১',units:2},{id:'AIF-002',name:'মো. সাইফুল ইসলাম',phone:'০৫X-XXX-১০০২',units:1},{id:'AIF-003',name:'মো. নাসির উদ্দিন',phone:'০৫X-XXX-১০০৩',units:2},{id:'AIF-004',name:'মো. রাকিবুল হাসান',phone:'০৫X-XXX-১০০৪',units:1},{id:'AIF-005',name:'মো. মাহমুদুল হক',phone:'০৫X-XXX-১০০৫',units:2}],years:{}}}
-function load(){try{return JSON.parse(localStorage.getItem(KEY))||fresh()}catch(e){return fresh()}}let state=load();
-function save(){try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){toast('ব্রাউজারে ডেটা সংরক্ষণ করা যায়নি।')}}function sheet(y){if(!state.years[y])state.years[y]={payments:{}};return state.years[y]}function key(id,m){return id+'|'+m}function pay(y,id,m){return sheet(y).payments[key(id,m)]||{paid:false,amount:0}}
-function go(id){document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id==='page-'+id));document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===id));document.getElementById('crumb').textContent=names[id]||'ড্যাশবোর্ড';document.getElementById('sidebar').classList.remove('open');if(id==='deposits')renderAnnualSheet();if(id==='members')renderMembers();window.scrollTo({top:0,behavior:'smooth'})}document.querySelectorAll('#nav button').forEach(b=>b.addEventListener('click',()=>go(b.dataset.page)));document.getElementById('menuBtn').addEventListener('click',()=>document.getElementById('sidebar').classList.toggle('open'));
-function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}function bn(n){return new Intl.NumberFormat('bn-BD',{maximumFractionDigits:0}).format(Math.round(n||0))}function money(n){return '৳ '+bn(n)}
-function renderMembers(){let body=document.getElementById('membersTableBody');if(!body)return;body.innerHTML='';state.members.forEach(m=>{let r=document.createElement('tr');r.dataset.name=m.name;r.dataset.id=m.id;r.dataset.unit=String(m.units||1);r.innerHTML=`<td><div class="person"><div class="avatar">${esc(m.name.slice(0,2))}</div>${esc(m.name)}</div></td><td>${esc(m.id)}</td><td>${esc(m.phone||'—')}</td><td>${m.units||1}</td><td>—</td><td><span class="pill">সক্রিয়</span></td>`;body.appendChild(r)});filterMembers()}
-function filterMembers(){let q=(document.getElementById('memberSearch')?.value||'').toLowerCase(),u=document.getElementById('unitFilter')?.value||'';document.querySelectorAll('#membersTableBody tr').forEach(r=>r.style.display=((r.dataset.name.toLowerCase().includes(q)||r.dataset.id.toLowerCase().includes(q))&&(!u||r.dataset.unit===u))?'':'none')}
-function memberDue(m){return Math.max(0,Number(m.units)||1)*Math.max(0,Number(document.getElementById('monthlyDue').value)||0)}
-function renderAnnualSheet(){let yearField=document.getElementById('annualYear'),y=Number(yearField.value)||new Date().getFullYear();if(y<1900||y>9999){toast('বছর ১৯০০ থেকে ৯৯৯৯-এর মধ্যে লিখুন।');yearField.value=new Date().getFullYear();y=Number(yearField.value)}yearField.value=String(y);let unitDue=Math.max(0,Number(document.getElementById('monthlyDue').value)||0);sheet(y);document.getElementById('annualTitle').textContent=y+' সালের বার্ষিক জমার চার্ট';document.getElementById('yearStatus').textContent=y+' সালের শিট';let t=document.getElementById('annualTable'),head=t.querySelector('thead'),body=t.querySelector('tbody'),foot=t.querySelector('tfoot');head.innerHTML='<tr><th>সদস্যের নাম</th><th>আইডি নম্বর</th><th>ইউনিট<br><small>ক্লিক করে বদলান</small></th>'+MONTHS.map((m,i)=>`<th>${m}<br><small>${i+1}</small></th>`).join('')+'<th>মাসিক নির্ধারিত</th><th>বার্ষিক মোট জমা</th><th>পরিশোধ</th></tr>';body.innerHTML='';let totals=Array(12).fill(0),counts=Array(12).fill(0),grand=0,paidTotal=0,totalUnits=0,expectedMonthly=0,expectedYearly=0;state.members.forEach(m=>{m.units=Math.max(1,Number(m.units)||1);let r=document.createElement('tr'),mt=0,mc=0,md=memberDue(m),cells=`<td>${esc(m.name)}</td><td>${esc(m.id)}</td><td><button class="amount-btn" onclick="editMemberUnits('${esc(m.id)}')">${bn(m.units)} ইউনিট</button></td>`;totalUnits+=m.units;expectedMonthly+=md;expectedYearly+=md*12;MONTHS.forEach((mo,i)=>{let p=pay(y,m.id,i),amount=p.paid?(Number(p.amount)>0?Number(p.amount):md):0;mt+=amount;if(p.paid){counts[i]++;totals[i]+=amount;mc++}cells+=`<td class="${p.paid?'paid-cell':''}"><input type="checkbox" aria-label="${esc(m.name)} ${mo}" ${p.paid?'checked':''} onchange="togglePayment('${esc(m.id)}',${i},this.checked)"><br><button class="amount-btn" onclick="editPaymentAmount('${esc(m.id)}',${i})">${p.paid?money(amount):money(md)}</button></td>`});grand+=mt;paidTotal+=mc;cells+=`<td class="sum">${money(md)}</td><td class="sum">${money(mt)}</td><td>${bn(mc)}/১২</td>`;r.innerHTML=cells;body.appendChild(r)});foot.innerHTML='<tr><td colspan="3">মাসভিত্তিক মোট</td>'+totals.map((v,i)=>`<td class="sum">${money(v)}<br><small>${bn(counts[i])} মাসিক পরিশোধ</small></td>`).join('')+`<td class="sum">${money(expectedMonthly)}</td><td class="sum">${money(grand)}</td><td>${bn(paidTotal)} টিক</td></tr>`;document.getElementById('annualMemberCount').textContent=bn(state.members.length);document.getElementById('annualUnitCount').textContent=bn(totalUnits);document.getElementById('annualMonthlyExpected').textContent=money(expectedMonthly);document.getElementById('annualTotal').textContent=money(grand);document.getElementById('annualDue').textContent=money(Math.max(0,expectedYearly-grand))}
-function editMemberUnits(id){let m=state.members.find(x=>x.id===id);if(!m)return;let v=prompt('সদস্য '+m.name+' — কতটি ইউনিট?',String(m.units||1));if(v===null)return;let n=Number(v);if(!Number.isInteger(n)||n<1||n>1000){toast('ইউনিট সংখ্যা ১ থেকে ১০০০-এর পূর্ণসংখ্যা হতে হবে।');return}m.units=n;save();renderMembers();renderAnnualSheet();toast('ইউনিট সংখ্যা আপডেট হয়েছে।')}
-function openSelectedYear(){let y=Number(document.getElementById('annualYear').value);if(!Number.isInteger(y)||y<1900||y>9999){toast('১৯০০–৯৯৯৯-এর মধ্যে একটি সাল লিখুন।');return}sheet(y);save();renderAnnualSheet();toast(y+' সালের শিট খোলা হয়েছে।')}
-function togglePayment(id,m,checked){let y=Number(document.getElementById('annualYear').value),old=pay(y,id,m),member=state.members.find(x=>x.id===id),due=member?memberDue(member):0;sheet(y).payments[key(id,m)]={paid:checked,amount:checked?(Number(old.amount)>0?Number(old.amount):due):0};save();renderAnnualSheet()}
-function editPaymentAmount(id,m){let y=Number(document.getElementById('annualYear').value),p=pay(y,id,m),member=state.members.find(x=>x.id===id),due=member?memberDue(member):0,v=prompt('এই মাসে বাস্তবে জমা দেওয়া পরিমাণ লিখুন (৳):',String(p.paid?(Number(p.amount)>0?p.amount:due):due));if(v===null)return;let amount=Number(v);if(!Number.isFinite(amount)||amount<0){toast('সঠিক পরিমাণ লিখুন।');return}sheet(y).payments[key(id,m)]={paid:true,amount};save();renderAnnualSheet()}
-function addMemberFromForm(e){e.preventDefault();let name=document.getElementById('newMemberName').value.trim(),id=document.getElementById('newMemberId').value.trim().toUpperCase(),phone=document.getElementById('newMemberPhone').value.trim(),units=Number(document.getElementById('newMemberUnits').value)||1;if(!Number.isInteger(units)||units<1||units>1000){toast('ইউনিট সংখ্যা ১ থেকে ১০০০-এর মধ্যে পূর্ণসংখ্যা দিন।');return}if(state.members.some(m=>m.id.toLowerCase()===id.toLowerCase())){toast('এই আইডি আগে থেকেই আছে।');return}state.members.push({name,id,phone,units});save();e.target.reset();document.getElementById('newMemberUnits').value='1';renderMembers();renderAnnualSheet();toast('সদস্য যোগ হয়েছে; ইউনিট অনুযায়ী মাসিক জমা হিসাব হবে।')}
-function addYearSheet(){let current=Number(document.getElementById('annualYear').value)||new Date().getFullYear(),y=current+1;if(y>9999){toast('সর্বোচ্চ বছর ৯৯৯৯ পর্যন্ত।');return}document.getElementById('annualYear').value=String(y);sheet(y);save();renderAnnualSheet();toast(y+' সালের নতুন খালি শিট তৈরি হয়েছে।')}
-function exportAnnualCSV(){let y=Number(document.getElementById('annualYear').value),rows=[['সদস্যের নাম','সদস্য আইডি','ইউনিট সংখ্যা','মাসিক নির্ধারিত জমা',...MONTHS,'বার্ষিক মোট','পরিশোধিত মাস']];state.members.forEach(m=>{let total=0,count=0,due=memberDue(m),vals=MONTHS.map((_,i)=>{let p=pay(y,m.id,i),a=p.paid?(Number(p.amount)>0?Number(p.amount):due):0;if(p.paid)count++;total+=a;return p.paid?a:0});rows.push([m.name,m.id,m.units,due,...vals,total,count])});let csv='\uFEFF'+rows.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(',')).join('\r\n'),blob=new Blob([csv],{type:'text/csv;charset=utf-8;'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='Al_Ifadah_Annual_Deposits_'+y+'.csv';a.click();URL.revokeObjectURL(url)}
-let toastTimer;function toast(msg){let t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),3200)}document.getElementById('annualYear').value = new Date().getFullYear();
-renderMembers();
-renderAnnualSheet();
-</script>
+</main>
+<div class="footer">আল-ইফাদাহ ফোরাম · তথ্যের সঠিকতা ও গোপনীয়তা রক্ষা করুন।</div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
+(() => {
   const SUPABASE_URL = 'https://zwzjfmxcvbfeaqlwolmu.supabase.co';
   const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_D-M3Ol4MaxRG4skdkQ6xzg_fA0Zoico';
+  const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+  let currentUser = null;
+  let isAdmin = false;
+  let cachedMembers = [];
 
-  const supabaseClient = window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_PUBLISHABLE_KEY
-  );
-
-  console.log('Supabase client initialized');
+  const $ = id => document.getElementById(id);
+  const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+  }[c]));
+  const money = value => new Intl.NumberFormat('bn-BD',{maximumFractionDigits:2}).format(Number(value || 0));
+  function status(message, error=false) {
+    const el=$('globalStatus'); el.textContent=message; el.classList.toggle('error',!!error);
+  }
+  function tableHtml(headers, rows) {
+    if (!rows.length) return '<p class="muted">কোনো তথ্য পাওয়া যায়নি।</p>';
+    return '<table><thead><tr>'+headers.map(h=>'<th>'+esc(h)+'</th>').join('')+'</tr></thead><tbody>'+
+      rows.map(row=>'<tr>'+row.map(cell=>'<td>'+esc(cell)+'</td>').join('')+'</tr>').join('')+
+      '</tbody></table>';
+  }
+  window.showSection = id => {
+    document.querySelectorAll('.section').forEach(s=>s.classList.add('hidden'));
+    $(id)?.classList.remove('hidden');
+    if (id==='members') loadMembers();
+    if (id==='deposits') loadDeposits();
+    if (id==='investments') loadInvestments();
+    if (id==='plans') loadPlans();
+  };
+  function updateAdminUI() {
+    ['addMemberPanel','addDepositPanel','addInvestmentPanel','addPlanPanel'].forEach(id => $(id).classList.toggle('hidden',!isAdmin));
+    $('loginStatus').textContent = isAdmin ? 'Admin হিসেবে লগইন করা আছে।' : 'Admin লগইন করা নেই।';
+  }
+  async function checkAdmin() {
+    const {data:{user}} = await db.auth.getUser();
+    currentUser=user||null; isAdmin=false;
+    if (currentUser) {
+      const {data:member,error} = await db.from('members').select('role').eq('user_id',currentUser.id).maybeSingle();
+      isAdmin=!error && member?.role==='admin';
+      if (!isAdmin) await db.auth.signOut();
+    }
+    updateAdminUI();
+  }
+  async function runQuery(query, label) {
+    const {data,error}=await query;
+    if(error) { status(label+' লোড হয়নি: '+error.message,true); return null; }
+    return data||[];
+  }
+  async function loadMembers() {
+    const data=await runQuery(db.from('members').select('id,full_name,phone,email,role').order('full_name'), 'সদস্য');
+    if(!data)return;
+    cachedMembers=data;
+    $('memberCount').textContent=money(data.length);
+    $('membersList').innerHTML=tableHtml(['নাম','ফোন','ইমেইল','ভূমিকা'],data.map(m=>[m.full_name,m.phone||'—',m.email||'—',m.role||'member']));
+    $('depositMember').innerHTML='<option value="">সদস্য বাছাই করুন</option>'+data.map(m=>'<option value="'+esc(m.id)+'">'+esc(m.full_name)+'</option>').join('');
+  }
+  async function loadDeposits() {
+    const data=await runQuery(db.from('deposits').select('amount,deposit_date,note,member_id').order('deposit_date',{ascending:false}), 'জমা');
+    if(!data)return;
+    $('depositCount').textContent=money(data.length);
+    $('depositsList').innerHTML=tableHtml(['সদস্য','পরিমাণ','তারিখ','নোট'],data.map(d=>[(cachedMembers.find(m=>m.id===d.member_id)||{}).full_name||'সদস্য',money(d.amount),d.deposit_date||'—',d.note||'—']));
+  }
+  async function loadInvestments() {
+    const data=await runQuery(db.from('investments').select('title,amount,investment_date,note').order('investment_date',{ascending:false}), 'বিনিয়োগ');
+    if(!data)return;
+    $('investmentCount').textContent=money(data.length);
+    $('investmentsList').innerHTML=tableHtml(['নাম','পরিমাণ','তারিখ','নোট'],data.map(d=>[d.title,money(d.amount),d.investment_date||'—',d.note||'—']));
+  }
+  async function loadPlans() {
+    const data=await runQuery(db.from('plans').select('title,description,target_amount,status').order('created_at',{ascending:false}), 'পরিকল্পনা');
+    if(!data)return;
+    $('planCount').textContent=money(data.length);
+    $('plansList').innerHTML=tableHtml(['শিরোনাম','বিবরণ','লক্ষ্যমাত্রা','অবস্থা'],data.map(p=>[p.title,p.description||'—',money(p.target_amount),p.status]));
+  }
+  window.loadMembers=loadMembers; window.loadDeposits=async()=>{await loadMembers();await loadDepositsInner();};
+  async function loadDepositsInner() {
+    const data=await runQuery(db.from('deposits').select('amount,deposit_date,note,member_id').order('deposit_date',{ascending:false}), 'জমা');
+    if(!data)return;
+    $('depositCount').textContent=money(data.length);
+    $('depositsList').innerHTML=tableHtml(['সদস্য','পরিমাণ','তারিখ','নোট'],data.map(d=>[(cachedMembers.find(m=>m.id===d.member_id)||{}).full_name||'সদস্য',money(d.amount),d.deposit_date||'—',d.note||'—']));
+  }
+  window.loadInvestments=loadInvestments; window.loadPlans=loadPlans;
+  $('loginForm').addEventListener('submit',async e=>{
+    e.preventDefault();
+    const {error}=await db.auth.signInWithPassword({email:$('adminEmail').value.trim(),password:$('adminPassword').value});
+    if(error){$('loginStatus').textContent='লগইন ব্যর্থ: '+error.message;return;}
+    await checkAdmin();
+    if(!isAdmin){$('loginStatus').textContent='এই অ্যাকাউন্টের Admin অনুমতি যাচাই হয়নি।';return;}
+    $('loginStatus').textContent='Admin লগইন সফল।';
+    $('adminPassword').value='';
+    status('Admin লগইন সফল।');
+    await loadMembers(); await loadDepositsInner(); await loadInvestments(); await loadPlans();
+  });
+  window.logout=async()=>{await db.auth.signOut();await checkAdmin();status('লগআউট হয়েছে।');};
+  $('memberForm').addEventListener('submit',async e=>{
+    e.preventDefault(); if(!isAdmin)return;
+    const {error}=await db.from('members').insert({full_name:$('memberName').value.trim(),phone:$('memberPhone').value.trim()||null,email:$('memberEmail').value.trim()||null,role:'member'});
+    if(error){status('সদস্য যোগ হয়নি: '+error.message,true);return;}
+    e.target.reset();status('সদস্য যোগ হয়েছে।');await loadMembers();
+  });
+  $('depositForm').addEventListener('submit',async e=>{
+    e.preventDefault(); if(!isAdmin)return;
+    const payload={member_id:$('depositMember').value,amount:Number($('depositAmount').value),deposit_date:$('depositDate').value||new Date().toISOString().slice(0,10),note:$('depositNote').value.trim()||null};
+    const {error}=await db.from('deposits').insert(payload);
+    if(error){status('জমা সংরক্ষণ হয়নি: '+error.message,true);return;}
+    e.target.reset();status('জমা সংরক্ষণ হয়েছে।');await loadDepositsInner();
+  });
+  $('investmentForm').addEventListener('submit',async e=>{
+    e.preventDefault(); if(!isAdmin)return;
+    const payload={title:$('investmentTitle').value.trim(),amount:Number($('investmentAmount').value),investment_date:$('investmentDate').value||new Date().toISOString().slice(0,10),note:$('investmentNote').value.trim()||null};
+    const {error}=await db.from('investments').insert(payload);
+    if(error){status('বিনিয়োগ সংরক্ষণ হয়নি: '+error.message,true);return;}
+    e.target.reset();status('বিনিয়োগ সংরক্ষণ হয়েছে।');await loadInvestments();
+  });
+  $('planForm').addEventListener('submit',async e=>{
+    e.preventDefault(); if(!isAdmin)return;
+    const payload={title:$('planTitle').value.trim(),description:$('planDescription').value.trim()||null,target_amount:Number($('planTarget').value||0),status:$('planStatus').value};
+    const {error}=await db.from('plans').insert(payload);
+    if(error){status('পরিকল্পনা সংরক্ষণ হয়নি: '+error.message,true);return;}
+    e.target.reset();status('পরিকল্পনা সংরক্ষণ হয়েছে।');await loadPlans();
+  });
+  db.auth.onAuthStateChange(()=>{setTimeout(async()=>{await checkAdmin();},0);});
+  async function init(){
+    try{
+      await checkAdmin();
+      await loadMembers();
+      await loadDepositsInner();
+      await loadInvestments();
+      await loadPlans();
+      status('ডেটাবেস থেকে তথ্য লোড হয়েছে।');
+    }catch(err){status('সংযোগ সমস্যা: '+(err?.message||String(err)),true);}
+  }
+  init();
+})();
 </script>
-</body></html>
+</body>
+</html>
