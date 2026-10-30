@@ -287,13 +287,23 @@ header .wrap{max-width:1440px}
     yearSelect.value=String(years.includes(selected)?selected:years[0]);
     const year=Number(yearSelect.value), months=Array.from({length:12},(_,i)=>String(i+1).padStart(2,'0'));
     const yearData=data.filter(d=>String(d.deposit_date||'').startsWith(String(year)+'-'));
-    const now=new Date(), currentMonth=now.getFullYear()===year?now.getMonth()+1:12;
+    const now=new Date(), currentMonth=now.getFullYear()===year?now.getMonth()+1:(now.getFullYear()>year?12:0), today=now.getDate();
     const rows=cachedMembers.map(m=>{
       const unit=Number(m.units||1), joined=new Date(m.created_at||now), startMonth=joined.getFullYear()<year?1:(joined.getFullYear()===year?joined.getMonth()+1:13);
       const amounts=months.map(month=>yearData.filter(d=>d.member_id===m.id&&String(d.deposit_date||'').slice(5,7)===month).reduce((sum,d)=>sum+Number(d.amount||0),0));
       const expected=months.map((month,i)=>(i+1>=startMonth&&i+1<=currentMonth)?unit*1000:0);
       const total=amounts.reduce((sum,n)=>sum+n,0), dueTotal=expected.reduce((sum,n)=>sum+n,0), balance=total-dueTotal;
-      return [m.full_name,...amounts.map((n,i)=>n?money(n/1000)+' / '+money(n)+'৳':'—'),money(total/1000)+' ইউনিট',money(total)+' টাকা',money(dueTotal)+' টাকা',balance>0?('অগ্রিম '+money(balance)+' টাকা'):(balance<0?('বকেয়া '+money(-balance)+' টাকা'):'সমন্বিত')];
+      const monthCells=amounts.map((n,i)=>{
+        const monthNo=i+1, isDueMonth=monthNo>=startMonth&&monthNo<=currentMonth;
+        if(!isDueMonth)return '—';
+        const paid=n>=unit*1000, partial=n>0&&n<unit*1000;
+        const isCurrent=year===now.getFullYear()&&monthNo===now.getMonth()+1;
+        const overdue=!isCurrent||today>15;
+        const mark=paid?'🟢':(partial?'🟡':(overdue?'🔴':'⚪'));
+        const label=paid?'জমা সম্পন্ন':(partial?'আংশিক জমা':(overdue?'বকেয়া':'১৫ তারিখ পর্যন্ত সময় আছে'));
+        return '<span title="'+label+'">'+mark+(n?' '+money(n/1000)+' / '+money(n)+'৳':'')+'</span>';
+      });
+      return [m.full_name,...monthCells,money(total/1000)+' ইউনিট',money(total)+' টাকা',money(dueTotal)+' টাকা',balance>0?('অগ্রিম '+money(balance)+' টাকা'):(balance<0?('বকেয়া '+money(-balance)+' টাকা'):'সমন্বিত')];
     });
     const totals=months.map(month=>yearData.filter(d=>String(d.deposit_date||'').slice(5,7)===month).reduce((sum,d)=>sum+Number(d.amount||0),0));
     const grand=totals.reduce((sum,n)=>sum+n,0);
