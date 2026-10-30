@@ -1,5 +1,7 @@
 name = "black-sound-c37a"
+main = "worker.js"
 compatibility_date = "2026-10-23"
 
 [assets]
 directory = "./"
+binding = "ASSETS"
