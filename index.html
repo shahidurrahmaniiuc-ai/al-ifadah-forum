@@ -534,16 +534,21 @@ header .wrap{max-width:1440px}
     await loadForumPdfs();
   };
 
+  async function loadPublicStats(){
+    const {data,error}=await db.rpc('get_public_forum_stats');
+    if(error) throw error;
+    const stats=data||{};
+    $('memberCount').textContent=money(stats.member_count);
+    $('depositCount').textContent='৳ '+money(stats.deposit_total);
+    $('investmentCount').textContent='৳ '+money(stats.investment_total);
+  }
+
   db.auth.onAuthStateChange(()=>{setTimeout(async()=>{await checkAdmin();},0);});
   async function init(){
     try{
       await checkAdmin();
-      // Public visitors must not trigger reads of member-level financial records.
-      // Aggregate public statistics will be connected to approved database views
-      // after the existing RLS policies and schema are verified.
-      $('memberCount').textContent='সদস্যদের জন্য';
-      $('depositCount').textContent='সদস্যদের জন্য';
-      $('investmentCount').textContent='সদস্যদের জন্য';
+      // Public visitors receive aggregate totals only; no member-level rows are queried.
+      await loadPublicStats();
       await loadForumPdfs();
       if(isAdmin){
         await loadMembers();
