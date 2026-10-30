@@ -15,7 +15,7 @@ button,.tab{border:0;border-radius:9px;padding:10px 14px;background:var(--green)
 button:hover,.tab:hover{background:var(--green2)}button.secondary{background:#e6eee8;color:var(--green)}button.danger{background:var(--red)}button:disabled{opacity:.5;cursor:not-allowed}
 main{padding:4px 0 32px}.panel{background:var(--white);border:1px solid var(--line);border-radius:14px;padding:18px;margin:12px 0;box-shadow:0 3px 12px #102b1b08}
 h2{margin:0 0 12px;color:var(--green);font-size:1.25rem}h3{margin:16px 0 8px;font-size:1.05rem}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}.dashboard-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:16px;margin-top:18px}.dashboard-stat{min-height:112px;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;padding:20px;border:1px solid var(--line);border-radius:12px;background:#fff;box-shadow:0 3px 12px #102b1b0a}.dashboard-stat small{font-size:.95rem;color:var(--muted)}.dashboard-stat strong{font-size:2rem;color:var(--green);margin-top:6px}.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px}.stat{background:#f0f7f1;border:1px solid var(--line);border-radius:12px;padding:14px}.stat small{display:block;color:var(--muted)}.stat strong{font-size:1.35rem;color:var(--green)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}.dashboard-welcome{margin-bottom:16px;padding:22px}.dashboard-welcome p{margin:0;color:var(--muted)}.dashboard-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.dashboard-card{margin:0;min-height:120px;display:flex;align-items:center;gap:16px;padding:20px;border-radius:14px}.dashboard-card small{display:block;color:var(--muted);font-size:.95rem}.dashboard-card strong{display:block;color:var(--green);font-size:2rem;line-height:1.3;margin-top:4px}.dashboard-card-icon{width:52px;height:52px;flex:0 0 52px;border-radius:14px;background:#edf5ee;display:grid;place-items:center;font-size:1.55rem}.dashboard-note{margin:12px 4px 0}@media(max-width:650px){.dashboard-cards{grid-template-columns:1fr;gap:10px}.dashboard-card{min-height:88px;padding:16px}.dashboard-card-icon{width:46px;height:46px;flex-basis:46px}.dashboard-welcome{padding:18px}}.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px}.stat{background:#f0f7f1;border:1px solid var(--line);border-radius:12px;padding:14px}.stat small{display:block;color:var(--muted)}.stat strong{font-size:1.35rem;color:var(--green)}
 label{display:block;font-weight:600;font-size:.92rem;margin:8px 0 4px}input,select,textarea{width:100%;border:1px solid #cbd8ce;border-radius:8px;padding:10px;font:inherit;background:#fff;color:var(--ink)}textarea{min-height:75px;resize:vertical}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.status{padding:10px 12px;border-radius:8px;background:#eef4ef;margin:10px 0;overflow-wrap:anywhere}.status.error{background:#fff0f0;color:#8e2020}.hidden{display:none!important}.table-wrap{overflow:auto}table{border-collapse:collapse;width:100%;min-width:480px}th,td{text-align:left;padding:10px;border-bottom:1px solid var(--line);vertical-align:top}th{background:#edf4ee;color:var(--green)}.muted{color:var(--muted);font-size:.9rem}.pill{display:inline-block;border-radius:999px;background:#e8f1e9;color:var(--green);padding:3px 9px;font-size:.8rem}.footer{padding:20px 0 32px;color:var(--muted);font-size:.85rem}
 @media(max-width:520px){.panel{padding:14px}nav button{flex:1 1 42%}}
 </style>
@@ -38,14 +38,25 @@ label{display:block;font-weight:600;font-size:.92rem;margin:8px 0 4px}input,sele
 <div id="globalStatus" class="status" role="status">ডেটাবেস সংযোগ পরীক্ষা করা হচ্ছে…</div>
 <main>
 <section id="home" class="section">
-  <div class="panel"><h2>স্বাগতম</h2><p>আল-ইফাদাহ ফোরামের অনলাইন ব্যবস্থাপনা প্যানেল। ডেটাবেস থেকে তথ্য দেখতে নিচের তালিকা ব্যবহার করুন।</p>
-    <div class="stats dashboard-stats">
-      <div class="stat dashboard-stat"><small>মোট সদস্য</small><strong id="memberCount">—</strong></div>
-      <div class="stat dashboard-stat"><small>মোট জমার রেকর্ড</small><strong id="depositCount">—</strong></div>
-      <div class="stat dashboard-stat"><small>মোট বিনিয়োগ</small><strong id="investmentCount">—</strong></div>
-    </div>
-    <p class="muted">এই প্যানেল Supabase-এ থাকা রেকর্ড দেখায়; কোনো ডেমো তথ্যকে বাস্তব হিসাব হিসেবে দেখানো হয় না।</p>
+  <div class="panel dashboard-welcome">
+    <h2>স্বাগতম</h2>
+    <p>আল-ইফাদাহ ফোরামের অনলাইন ব্যবস্থাপনা প্যানেল। ডেটাবেস থেকে ফোরামের তথ্য সহজে দেখুন।</p>
   </div>
+  <div class="dashboard-cards">
+    <div class="panel dashboard-card">
+      <div class="dashboard-card-icon">👥</div>
+      <div><small>সদস্য</small><strong id="memberCount">—</strong></div>
+    </div>
+    <div class="panel dashboard-card">
+      <div class="dashboard-card-icon">৳</div>
+      <div><small>জমা</small><strong id="depositCount">—</strong></div>
+    </div>
+    <div class="panel dashboard-card">
+      <div class="dashboard-card-icon">📊</div>
+      <div><small>বিনিয়োগ</small><strong id="investmentCount">—</strong></div>
+    </div>
+  </div>
+  <p class="muted dashboard-note">এই প্যানেল Supabase-এ থাকা বাস্তব রেকর্ড দেখায়।</p>
 </section>
 
 <section id="members" class="section hidden">
