@@ -108,11 +108,12 @@ export default {
           if (!response.ok) throw new Error("database");
           return response.json();
         };
-        const [deposits, investments, plans, unitHistory] = await Promise.all([
-          readRows("deposits", "amount,deposit_date,note", [["member_id", "eq." + member.id]], "deposit_date.desc"),
+        const [members, deposits, investments, plans, unitHistory] = await Promise.all([
+          readRows("members", "id,member_code,full_name,email,phone,units,is_active,role,created_at,nominee_name,nominee_phone,nominee_nid,nominee_relation", [], "full_name.asc"),
+          readRows("deposits", "member_id,amount,deposit_date,note", [], "deposit_date.desc"),
           readRows("investments", "title,amount,investment_date,investment_end_date,note", [], "investment_date.desc"),
           readRows("plans", "title,description,target_amount,status,created_at", [], "created_at.desc"),
-          readRows("member_unit_history", "old_units,new_units,changed_at,note", [["member_id", "eq." + member.id]], "changed_at.desc")
+          readRows("member_unit_history", "member_id,old_units,new_units,changed_at,note", [], "changed_at.desc")
         ]);
         return json({ member: {
           member_code: member.member_code, full_name: member.full_name,
@@ -121,7 +122,7 @@ export default {
             name: member.nominee_name, phone: member.nominee_phone,
             nid: member.nominee_nid, relation: member.nominee_relation
           }
-        }, deposits, investments, plans, unit_history: unitHistory });
+        }, members, deposits, investments, plans, unit_history: unitHistory });
       } catch { return json({ error: "সদস্যের তথ্য আনা যায়নি।" }, 503); }
     }
 
