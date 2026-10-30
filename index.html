@@ -146,7 +146,8 @@ header .wrap{max-width:1440px}
     <form id="investmentForm"><div class="grid">
       <div><label for="investmentTitle">বিনিয়োগের নাম *</label><input id="investmentTitle" required maxlength="150"></div>
       <div><label for="investmentAmount">পরিমাণ *</label><input id="investmentAmount" type="number" min="0.01" step="0.01" required></div>
-      <div><label for="investmentDate">তারিখ</label><input id="investmentDate" type="date"></div>
+      <div><label for="investmentDate">বিনিয়োগ শুরুর তারিখ *</label><input id="investmentDate" type="date" required></div>
+      <div><label for="investmentEndDate">সম্ভাব্য শেষ তারিখ</label><input id="investmentEndDate" type="date"></div>
       <div><label for="investmentNote">নোট</label><input id="investmentNote" maxlength="500"></div>
     </div><div class="actions"><button type="submit">বিনিয়োগ সংরক্ষণ</button></div></form>
   </div>
@@ -336,10 +337,22 @@ header .wrap{max-width:1440px}
     await renderDepositSummary(data);
   }
   async function loadInvestments() {
-    const data=await runQuery(db.from('investments').select('title,amount,investment_date,note').order('investment_date',{ascending:false}), 'বিনিয়োগ');
+    const data=await runQuery(db.from('investments').select('title,amount,investment_date,investment_end_date,note').order('investment_date',{ascending:false}), 'বিনিয়োগ');
     if(!data)return;
     $('investmentCount').textContent=money(data.length);
-    $('investmentsList').innerHTML=tableHtml(['নাম','পরিমাণ','তারিখ','নোট'],data.map(d=>[d.title,money(d.amount),d.investment_date||'—',d.note||'—']));
+    const today=new Date(); today.setHours(0,0,0,0);
+    const rows=data.map(d=>{
+      const start=d.investment_date?new Date(d.investment_date+'T00:00:00'):null;
+      const end=d.investment_end_date?new Date(d.investment_end_date+'T00:00:00'):null;
+      const elapsed=start?Math.max(0,Math.floor((today-start)/86400000)):null;
+      const remaining=end?Math.ceil((end-today)/86400000):null;
+      const state=end?(remaining<0?'মেয়াদ শেষ':(remaining===0?'আজ শেষ':'চলমান')):'শেষ তারিখ নির্ধারিত নয়';
+      const duration=elapsed===null?'—':Math.floor(elapsed/30)+' মাস '+(elapsed%30)+' দিন';
+      const left=remaining===null?'—':remaining<0?'মেয়াদ অতিক্রান্ত '+Math.abs(remaining)+' দিন':remaining+' দিন';
+      return [d.title,money(d.amount)+' টাকা',d.investment_date||'—',d.investment_end_date||'—',duration,left,state,d.note||'—'];
+    });
+    const total=data.reduce((s,d)=>s+Number(d.amount||0),0);
+    $('investmentsList').innerHTML='<div class="finance-summary"><div class="finance-card"><small>মোট ফোরাম বিনিয়োগ</small><strong>'+money(total)+' টাকা</strong></div><div class="finance-card"><small>প্রকল্প / বিনিয়োগ সংখ্যা</small><strong>'+money(data.length)+'</strong></div></div>'+tableHtml(['বিনিয়োগ / প্রকল্প','মূলধন','শুরুর তারিখ','শেষ তারিখ','অতিক্রান্ত সময়','অবশিষ্ট সময়','অবস্থা','নোট'],rows);
   }
   async function loadPlans() {
     const data=await runQuery(db.from('plans').select('title,description,target_amount,status').order('created_at',{ascending:false}), 'পরিকল্পনা');
@@ -429,7 +442,9 @@ header .wrap{max-width:1440px}
   });
   $('investmentForm').addEventListener('submit',async e=>{
     e.preventDefault(); if(!isAdmin)return;
-    const payload={title:$('investmentTitle').value.trim(),amount:Number($('investmentAmount').value),investment_date:$('investmentDate').value||new Date().toISOString().slice(0,10),note:$('investmentNote').value.trim()||null};
+    const startDate=$('investmentDate').value||new Date().toISOString().slice(0,10),endDate=$('investmentEndDate').value||null;
+    if(endDate&&endDate<startDate){status('শেষ তারিখ শুরুর তারিখের আগে হতে পারবে না।',true);return;}
+    const payload={title:$('investmentTitle').value.trim(),amount:Number($('investmentAmount').value),investment_date:startDate,investment_end_date:endDate,note:$('investmentNote').value.trim()||null};
     const {error}=await db.from('investments').insert(payload);
     if(error){status('বিনিয়োগ সংরক্ষণ হয়নি: '+error.message,true);return;}
     e.target.reset();status('বিনিয়োগ সংরক্ষণ হয়েছে।');await loadInvestments();
