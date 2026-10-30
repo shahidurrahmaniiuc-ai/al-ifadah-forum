@@ -102,6 +102,7 @@ header .wrap{max-width:1440px}
     <div class="actions"><button onclick="loadMembers()">তথ্য রিফ্রেশ</button></div>
     <div class="muted">Admin সদস্যের ইউনিট ও সক্রিয় অবস্থা পরিবর্তন করতে পারবেন। নিষ্ক্রিয় সদস্যের পুরোনো জমার ইতিহাস থাকবে।</div>
     <div id="membersList" class="table-wrap"></div>
+    <div id="memberLedger" class="panel hidden" style="margin-top:16px"></div>
   </div>
   <div id="addMemberPanel" class="panel hidden"><h2>নতুন সদস্য যোগ (Admin)</h2>
     <form id="memberForm">
@@ -276,8 +277,8 @@ header .wrap{max-width:1440px}
     if(!data)return;
     cachedMembers=data;
     $('memberCount').textContent=money(data.length);
-    $('membersList').innerHTML = '<table><thead><tr><th>সদস্য আইডি</th><th>নাম</th><th>ফোন</th><th>ইউনিট</th><th>অবস্থা</th><th>ভূমিকা</th>'+(isAdmin?'<th>পরিচালনা</th>':'')+'</tr></thead><tbody>'+
-      data.map(m=>'<tr><td>'+esc(m.member_code||'—')+'</td><td>'+esc(m.full_name)+'</td><td>'+esc(m.phone||'—')+'</td><td>'+money(m.units||1)+'</td><td>'+(m.is_active===false?'নিষ্ক্রিয়':'সক্রিয়')+'</td><td>'+esc(m.role||'member')+'</td>'+(isAdmin?'<td><button type="button" onclick="editMember(\''+esc(m.id)+'\')">Edit</button></td>':'')+'</tr>').join('')+'</tbody></table>';
+    $('membersList').innerHTML = '<table><thead><tr><th>সদস্য আইডি</th><th>নাম</th><th>ফোন</th><th>ইউনিট</th><th>অবস্থা</th><th>ভূমিকা</th>'+'<th>হিসাব</th>'+(isAdmin?'<th>পরিচালনা</th>':'')+'</tr></thead><tbody>'+
+      data.map(m=>'<tr><td>'+esc(m.member_code||'—')+'</td><td>'+esc(m.full_name)+'</td><td>'+esc(m.phone||'—')+'</td><td>'+money(m.units||1)+'</td><td>'+(m.is_active===false?'নিষ্ক্রিয়':'সক্রিয়')+'</td><td>'+esc(m.role||'member')+'</td>'+'<td><button type="button" onclick="openMemberLedger(\''+esc(m.id)+'\')">হিসাব দেখুন</button></td>'+(isAdmin?'<td><button type="button" onclick="editMember(\''+esc(m.id)+'\')">Edit</button></td>':'')+'</tr>').join('')+'</tbody></table>';
     const activeMembers=data.filter(m=>m.is_active!==false); $('depositMember').innerHTML='<option value="">সদস্য নির্বাচন করুন</option>'+activeMembers.map(m=>'<option value="'+esc(m.id)+'">'+esc(m.full_name)+' · '+esc(m.member_code||'ID নেই')+'</option>').join('');
   }
   async function renderDepositSummary(data) {
@@ -316,6 +317,23 @@ header .wrap{max-width:1440px}
     $('depositCount').textContent=money(data.length);
     $('depositsList').innerHTML=tableHtml(['সদস্য','পরিমাণ','ইউনিট','তারিখ','নোট'],yearData.map(d=>[(cachedMembers.find(m=>m.id===d.member_id)||{}).full_name||'সদস্য',money(d.amount),money(Number(d.amount||0)/1000),d.deposit_date||'—',d.note||'—']));
   }
+  window.openMemberLedger = async id => {
+    const m=cachedMembers.find(x=>x.id===id); if(!m)return;
+    const box=$('memberLedger'); box.classList.remove('hidden'); box.innerHTML='<h3>'+esc(m.full_name)+' — ব্যক্তিগত হিসাব</h3><p class="muted">হিসাব লোড হচ্ছে…</p>';
+    const [depRes,invRes]=await Promise.all([
+      db.from('deposits').select('amount,deposit_date,note').eq('member_id',id).order('deposit_date',{ascending:false}),
+      db.from('investments').select('title,amount,investment_date,note').order('investment_date',{ascending:false})
+    ]);
+    if(depRes.error){box.innerHTML='<h3>'+esc(m.full_name)+' — ব্যক্তিগত হিসাব</h3><p class="error">জমার হিসাব লোড হয়নি: '+esc(depRes.error.message)+'</p>';return;}
+    const deposits=depRes.data||[],total=deposits.reduce((s,d)=>s+Number(d.amount||0),0);
+    const now=new Date(),joined=new Date(m.created_at||now),start=joined.getFullYear()<now.getFullYear()?1:(joined.getFullYear()===now.getFullYear()?joined.getMonth()+1:13);
+    const monthsDue=Math.max(0,now.getMonth()+1-start+(now.getDate()>15?0:-1));
+    const expected=monthsDue*Number(m.units||1)*1000,advance=Math.max(0,total-expected),due=Math.max(0,expected-total);
+    const depositRows=deposits.map(d=>[d.deposit_date||'—',money(d.amount)+' টাকা',d.note||'—']);
+    const invNote=invRes.error?'বিনিয়োগের তথ্য লোড করা যায়নি।':(invRes.data||[]).length?'ফোরামের বিনিয়োগের তালিকা নিচে আছে; বর্তমান ডেটাবেসে বিনিয়োগ সদস্যের সঙ্গে যুক্ত নয়, তাই ব্যক্তিগত বিনিয়োগ হিসেবে দেখানো যাচ্ছে না.':'এখনো বিনিয়োগের রেকর্ড নেই।';
+    box.innerHTML='<div class="actions" style="justify-content:space-between"><h3>'+esc(m.full_name)+' — ব্যক্তিগত হিসাব</h3><button type="button" onclick="document.getElementById(\'memberLedger\').classList.add(\'hidden\')">বন্ধ করুন</button></div><p class="muted">সদস্য আইডি: '+esc(m.member_code||'—')+' · বর্তমান ইউনিট: '+money(m.units||1)+'</p><div class="finance-summary"><div class="finance-card"><small>মোট জমা</small><strong>'+money(total)+' টাকা</strong></div><div class="finance-card"><small>নির্ধারিত জমা (আনুমানিক)</small><strong>'+money(expected)+' টাকা</strong></div><div class="finance-card advance"><small>অগ্রিম</small><strong>'+money(advance)+' টাকা</strong></div><div class="finance-card due"><small>বকেয়া</small><strong>'+money(due)+' টাকা</strong></div></div><h4>জমার বিস্তারিত</h4>'+tableHtml(['তারিখ','টাকার পরিমাণ','নোট'],depositRows)+'<h4>বিনিয়োগ</h4><p class="muted">'+invNote+'</p>';
+    box.scrollIntoView({behavior:'smooth',block:'start'});
+  };
   async function loadDeposits() {
     const data=await runQuery(db.from('deposits').select('amount,deposit_date,note,member_id').order('deposit_date',{ascending:false}), 'জমা');
     if(!data)return;
