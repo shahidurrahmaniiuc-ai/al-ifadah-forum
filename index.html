@@ -60,13 +60,13 @@ header .wrap{max-width:1440px}
   <div class="sidebar-brand"><div class="brand-mark">IF</div><div><strong>আল-ইফাদাহ</strong><small>ফোরাম ব্যবস্থাপনা</small></div></div>
   <div class="sidebar-label">প্রধান মেনু</div>
   <nav aria-label="প্রধান মেনু">
-    <button class="nav-item active" onclick="showSection('home')"><span>⌂</span> ড্যাশবোর্ড</button>
-    <button class="nav-item" onclick="showSection('members')"><span>♙</span> সদস্য</button>
-    <button class="nav-item" onclick="showSection('deposits')"><span>৳</span> জমা</button>
-    <button class="nav-item" onclick="showSection('investments')"><span>▥</span> বিনিয়োগ</button>
-    <button class="nav-item" onclick="showSection('plans')"><span>☷</span> পরিকল্পনা</button>
-    <button class="nav-item" onclick="showSection('documents')"><span>▤</span> গঠনতন্ত্র ও ফরম</button>
-    <button class="nav-item" onclick="showSection('admin')"><span>⚙</span> Admin লগইন</button>
+    <button class="nav-item active" onclick="showSection('home')" data-section="home"><span>⌂</span> ড্যাশবোর্ড</button>
+    <button class="nav-item" onclick="showSection('members')" data-section="members"><span>♙</span> সদস্য</button>
+    <button class="nav-item" onclick="showSection('deposits')" data-section="deposits"><span>৳</span> জমা</button>
+    <button class="nav-item" onclick="showSection('investments')" data-section="investments"><span>▥</span> বিনিয়োগ</button>
+    <button class="nav-item" onclick="showSection('plans')" data-section="plans"><span>☷</span> পরিকল্পনা</button>
+    <button class="nav-item" onclick="showSection('documents')" data-section="documents"><span>▤</span> গঠনতন্ত্র ও ফরম</button>
+    <button class="nav-item" onclick="showSection('admin')" data-section="admin"><span>⚙</span> Admin লগইন</button>
   </nav>
   <div class="sidebar-foot">তাকওয়া · স্বচ্ছতা · আমানতদারিতা</div>
 </aside>
@@ -128,7 +128,7 @@ header .wrap{max-width:1440px}
   <div class="panel"><h2>জমার রেকর্ড</h2><div id="depositsList" class="table-wrap"></div></div>
   <div id="addDepositPanel" class="panel hidden"><h2>জমা যোগ (Admin)</h2>
     <form id="depositForm"><div class="grid">
-      <div><label for="depositMemberSearch">সদস্যের নাম লিখুন বা তালিকা থেকে বাছাই করুন *</label><input id="depositMemberSearch" list="depositMemberOptions" placeholder="সদস্যের নাম লিখুন..." autocomplete="off" required><datalist id="depositMemberOptions"></datalist><input id="depositMember" type="hidden"></div>
+      <div><label for="depositMember">সদস্যের নাম নির্বাচন করুন *</label><select id="depositMember" required><option value="">সদস্যের তালিকা লোড হচ্ছে…</option></select></div>
       <div><label for="depositUnits">জমার ইউনিট সংখ্যা *</label><input id="depositUnits" type="number" min="1" step="1" value="1" required></div>
       <div><label for="depositAmountDisplay">জমার টাকার পরিমাণ</label><input id="depositAmountDisplay" value="১,০০০ টাকা" readonly></div>
       <div><label for="depositDate">তারিখ</label><input id="depositDate" type="date"></div>
@@ -242,6 +242,7 @@ header .wrap{max-width:1440px}
   window.showSection = id => {
     document.querySelectorAll('.section').forEach(s=>s.classList.add('hidden'));
     $(id)?.classList.remove('hidden');
+    document.querySelectorAll('.sidebar .nav-item').forEach(btn=>btn.classList.toggle('active',btn.dataset.section===id));
     if (id==='members') loadMembers();
     if (id==='deposits') loadDeposits();
     if (id==='investments') loadInvestments();
@@ -267,7 +268,7 @@ header .wrap{max-width:1440px}
     if(error) { status(label+' লোড হয়নি: '+error.message,true); return null; }
     return data||[];
   }
-  $('depositMemberSearch').addEventListener('input',()=>{ const typed=$('depositMemberSearch').value.trim(); const match=cachedMembers.filter(m=>m.is_active!==false).find(m=>typed===m.full_name+' ('+(m.member_code||m.id.slice(0,8))+')'); $('depositMember').value=match?match.id:''; });
+  $('depositMember').addEventListener('change',()=>{ const m=cachedMembers.find(x=>x.id===$('depositMember').value); if(m){ $('depositUnits').value=String(Math.max(1,Number(m.units)||1)); $('depositAmountDisplay').value=money((Number(m.units)||1)*1000)+' টাকা'; } });
   async function loadMembers() {
     const data=await runQuery(db.from('members').select('id,member_code,full_name,phone,email,role,units,is_active,created_at').order('full_name'), 'সদস্য');
     if(!data)return;
@@ -275,7 +276,7 @@ header .wrap{max-width:1440px}
     $('memberCount').textContent=money(data.length);
     $('membersList').innerHTML = '<table><thead><tr><th>সদস্য আইডি</th><th>নাম</th><th>ফোন</th><th>ইউনিট</th><th>অবস্থা</th><th>ভূমিকা</th>'+(isAdmin?'<th>পরিচালনা</th>':'')+'</tr></thead><tbody>'+
       data.map(m=>'<tr><td>'+esc(m.member_code||'—')+'</td><td>'+esc(m.full_name)+'</td><td>'+esc(m.phone||'—')+'</td><td>'+money(m.units||1)+'</td><td>'+(m.is_active===false?'নিষ্ক্রিয়':'সক্রিয়')+'</td><td>'+esc(m.role||'member')+'</td>'+(isAdmin?'<td><button type="button" onclick="editMember(\''+esc(m.id)+'\')">Edit</button></td>':'')+'</tr>').join('')+'</tbody></table>';
-    const activeMembers=data.filter(m=>m.is_active!==false); $('depositMemberOptions').innerHTML=activeMembers.map(m=>'<option value="'+esc(m.full_name+' ('+(m.member_code||m.id.slice(0,8))+')')+'"></option>').join(''); $('depositMemberSearch').value=''; $('depositMember').value='';
+    const activeMembers=data.filter(m=>m.is_active!==false); $('depositMember').innerHTML='<option value="">সদস্য নির্বাচন করুন</option>'+activeMembers.map(m=>'<option value="'+esc(m.id)+'">'+esc(m.full_name)+' · '+esc(m.member_code||'ID নেই')+'</option>').join('');
   }
   async function renderDepositSummary(data) {
     const years=[...new Set([new Date().getFullYear(),...data.map(d=>Number(String(d.deposit_date||'').slice(0,4))).filter(y=>Number.isFinite(y)&&y>0)])].sort((a,b)=>b-a);
