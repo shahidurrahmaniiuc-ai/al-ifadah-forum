@@ -52,6 +52,7 @@ label{display:block;font-weight:600;font-size:.92rem;margin:8px 0 4px}input,sele
 <section id="members" class="section hidden">
   <div class="panel"><h2>সদস্য তালিকা</h2><p class="muted">এই তালিকা কেবল ডেটাবেসে থাকা সদস্যদের দেখায়।</p>
     <div class="actions"><button onclick="loadMembers()">তথ্য রিফ্রেশ</button></div>
+    <div class="muted">Admin সদস্যের ইউনিট ও সক্রিয় অবস্থা পরিবর্তন করতে পারবেন। নিষ্ক্রিয় সদস্যের পুরোনো জমার ইতিহাস থাকবে।</div>
     <div id="membersList" class="table-wrap"></div>
   </div>
   <div id="addMemberPanel" class="panel hidden"><h2>নতুন সদস্য যোগ (Admin)</h2>
@@ -214,12 +215,13 @@ label{display:block;font-weight:600;font-size:.92rem;margin:8px 0 4px}input,sele
     return data||[];
   }
   async function loadMembers() {
-    const data=await runQuery(db.from('members').select('id,full_name,phone,email,role').order('full_name'), 'সদস্য');
+    const data=await runQuery(db.from('members').select('id,full_name,phone,email,role,units,is_active,created_at').order('full_name'), 'সদস্য');
     if(!data)return;
     cachedMembers=data;
     $('memberCount').textContent=money(data.length);
-    $('membersList').innerHTML=tableHtml(['নাম','ফোন','ইমেইল','ভূমিকা'],data.map(m=>[m.full_name,m.phone||'—',m.email||'—',m.role||'member']));
-    $('depositMember').innerHTML='<option value="">সদস্য বাছাই করুন</option>'+data.map(m=>'<option value="'+esc(m.id)+'">'+esc(m.full_name)+'</option>').join('');
+    $('membersList').innerHTML = '<table><thead><tr><th>নাম</th><th>ফোন</th><th>ইউনিট</th><th>অবস্থা</th><th>ভূমিকা</th>'+(isAdmin?'<th>পরিচালনা</th>':'')+'</tr></thead><tbody>'+
+      data.map(m=>'<tr><td>'+esc(m.full_name)+'</td><td>'+esc(m.phone||'—')+'</td><td>'+money(m.units||1)+'</td><td>'+(m.is_active===false?'নিষ্ক্রিয়':'সক্রিয়')+'</td><td>'+esc(m.role||'member')+'</td>'+(isAdmin?'<td><button type="button" onclick="editMember(\''+esc(m.id)+'\')">Edit</button></td>':'')+'</tr>').join('')+'</tbody></table>';
+    $('depositMember').innerHTML='<option value="">সদস্য বাছাই করুন</option>'+data.filter(m=>m.is_active!==false).map(m=>'<option value="'+esc(m.id)+'">'+esc(m.full_name)+'</option>').join('');
   }
   async function renderDepositSummary(data) {
     const years=[...new Set([new Date().getFullYear(),...data.map(d=>Number(String(d.deposit_date||'').slice(0,4))).filter(y=>Number.isFinite(y)&&y>0)])].sort((a,b)=>b-a);
@@ -228,15 +230,18 @@ label{display:block;font-weight:600;font-size:.92rem;margin:8px 0 4px}input,sele
     yearSelect.value=String(years.includes(selected)?selected:years[0]);
     const year=Number(yearSelect.value), months=Array.from({length:12},(_,i)=>String(i+1).padStart(2,'0'));
     const yearData=data.filter(d=>String(d.deposit_date||'').startsWith(String(year)+'-'));
+    const now=new Date(), currentMonth=now.getFullYear()===year?now.getMonth()+1:12;
     const rows=cachedMembers.map(m=>{
+      const unit=Number(m.units||1), joined=new Date(m.created_at||now), startMonth=joined.getFullYear()<year?1:(joined.getFullYear()===year?joined.getMonth()+1:13);
       const amounts=months.map(month=>yearData.filter(d=>d.member_id===m.id&&String(d.deposit_date||'').slice(5,7)===month).reduce((sum,d)=>sum+Number(d.amount||0),0));
-      const total=amounts.reduce((sum,n)=>sum+n,0);
-      return [m.full_name,...amounts.map(n=>n?money(n/1000)+' ইউনিট':'—'),money(total/1000)+' ইউনিট',money(total)+' টাকা'];
+      const expected=months.map((month,i)=>(i+1>=startMonth&&i+1<=currentMonth)?unit*1000:0);
+      const total=amounts.reduce((sum,n)=>sum+n,0), dueTotal=expected.reduce((sum,n)=>sum+n,0), balance=total-dueTotal;
+      return [m.full_name,...amounts.map((n,i)=>n?money(n/1000)+' / '+money(n)+'৳':'—'),money(total/1000)+' ইউনিট',money(total)+' টাকা',money(dueTotal)+' টাকা',balance>0?('অগ্রিম '+money(balance)+' টাকা'):(balance<0?('বকেয়া '+money(-balance)+' টাকা'):'সমন্বিত')];
     });
     const totals=months.map(month=>yearData.filter(d=>String(d.deposit_date||'').slice(5,7)===month).reduce((sum,d)=>sum+Number(d.amount||0),0));
     const grand=totals.reduce((sum,n)=>sum+n,0);
-    rows.push(['সর্বমোট',...totals.map(n=>n?money(n/1000)+' ইউনিট':'—'),money(grand/1000)+' ইউনিট',money(grand)+' টাকা']);
-    $('depositYearSummary').innerHTML=tableHtml(['সদস্য',...months.map((m,i)=>['জানু','ফেব্রু','মার্চ','এপ্রিল','মে','জুন','জুলাই','আগ','সেপ্টে','অক্টো','নভে','ডিসে'][i]),'মোট ইউনিট','মোট টাকা'],rows);
+    rows.push(['সর্বমোট',...totals.map(n=>n?money(n/1000)+' / '+money(n)+'৳':'—'),money(grand/1000)+' ইউনিট',money(grand)+' টাকা','','']);
+    $('depositYearSummary').innerHTML=tableHtml(['সদস্য',...months.map((m,i)=>['জানু','ফেব্রু','মার্চ','এপ্রিল','মে','জুন','জুলাই','আগ','সেপ্টে','অক্টো','নভে','ডিসে'][i]),'জমা ইউনিট','মোট জমা','নির্ধারিত জমা','অগ্রিম / বকেয়া'],rows);
     $('depositCount').textContent=money(data.length);
     $('depositsList').innerHTML=tableHtml(['সদস্য','পরিমাণ','ইউনিট','তারিখ','নোট'],yearData.map(d=>[(cachedMembers.find(m=>m.id===d.member_id)||{}).full_name||'সদস্য',money(d.amount),money(Number(d.amount||0)/1000),d.deposit_date||'—',d.note||'—']));
   }
@@ -257,6 +262,21 @@ label{display:block;font-weight:600;font-size:.92rem;margin:8px 0 4px}input,sele
     $('planCount').textContent=money(data.length);
     $('plansList').innerHTML=tableHtml(['শিরোনাম','বিবরণ','লক্ষ্যমাত্রা','অবস্থা'],data.map(p=>[p.title,p.description||'—',money(p.target_amount),p.status]));
   }
+  window.editMember = async id => {
+    if(!isAdmin) return;
+    const member=cachedMembers.find(m=>m.id===id); if(!member) return;
+    const name=prompt('সদস্যের নাম',member.full_name); if(name===null)return;
+    const unitsText=prompt('সর্বশেষ নির্ধারিত ইউনিট সংখ্যা (পূর্ণ সংখ্যা)',String(member.units||1)); if(unitsText===null)return;
+    const units=Number(unitsText); if(!Number.isInteger(units)||units<0){alert('ইউনিট ০ বা তার বেশি পূর্ণ সংখ্যা হতে হবে।');return;}
+    const active=confirm('OK চাপলে সদস্য সক্রিয় থাকবে। Cancel চাপলে নিষ্ক্রিয় হবে।');
+    if(units!==Number(member.units||1)){
+      const {error:historyError}=await db.from('member_unit_history').insert({member_id:id,old_units:Number(member.units||1),new_units:units,changed_by:currentUser?.id||null,note:'Admin সদস্য সম্পাদনা'});
+      if(historyError){status('ইউনিট পরিবর্তনের ইতিহাস সংরক্ষণ হয়নি: '+historyError.message,true);return;}
+    }
+    const {error}=await db.from('members').update({full_name:name.trim(),units,is_active:active,unit_updated_at:new Date().toISOString()}).eq('id',id);
+    if(error){status('সদস্য আপডেট হয়নি: '+error.message,true);return;}
+    status('সদস্যের তথ্য ও ইউনিট আপডেট হয়েছে।'); await loadMembers(); await loadDepositsInner();
+  };
   window.loadMembers=loadMembers; window.loadDeposits=async()=>{await loadMembers();await loadDepositsInner();};
   async function loadDepositsInner() {
     const data=await runQuery(db.from('deposits').select('amount,deposit_date,note,member_id').order('deposit_date',{ascending:false}), 'জমা');
