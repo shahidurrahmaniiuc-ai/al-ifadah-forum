@@ -414,8 +414,10 @@ header .wrap{max-width:1440px}
     if(!isAdmin){$('loginStatus').textContent='এই অ্যাকাউন্টের Admin অনুমতি যাচাই হয়নি।';return;}
     $('loginStatus').textContent='Admin লগইন সফল।';
     $('adminPassword').value='';
-    status('Admin লগইন সফল।');
+    status('Admin লগইন সফল। ড্যাশবোর্ডে নেওয়া হচ্ছে…');
+    window.showSection('home');
     await loadMembers(); await loadDepositsInner(); await loadInvestments(); await loadPlans();
+    window.showSection('home');
   });
   window.logout=async()=>{await db.auth.signOut();await checkAdmin();status('লগআউট হয়েছে।');};
   function updateMemberMonthlyAmount(){const units=Number($('memberUnits').value||0);$('memberMonthlyAmount').value=Number.isInteger(units)&&units>0?money(units*1000)+' টাকা':'সঠিক ইউনিট দিন';}
