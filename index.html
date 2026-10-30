@@ -252,17 +252,6 @@ header .wrap{max-width:1440px}
 <div class="footer">আল-ইফাদাহ ফোরাম · তথ্যের সঠিকতা ও গোপনীয়তা রক্ষা করুন।</div>
 </div>
 
-<script>
-/* Navigation fallback: keep login panels reachable even if Supabase CDN is unavailable. */
-window.showSection = function(id) {
-  document.querySelectorAll('.section').forEach(section => section.classList.add('hidden'));
-  const target = document.getElementById(id);
-  if (target) target.classList.remove('hidden');
-  document.querySelectorAll('.sidebar .nav-item').forEach(button => {
-    button.classList.toggle('active', button.dataset.section === id);
-  });
-};
-</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 (() => {
