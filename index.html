@@ -61,7 +61,11 @@ label{display:block;font-weight:600;font-size:.92rem;margin:8px 0 4px}input,sele
         <div><label for="memberName">পূর্ণ নাম *</label><input id="memberName" required maxlength="150"></div>
         <div><label for="memberPhone">ফোন</label><input id="memberPhone" maxlength="40"></div>
         <div><label for="memberEmail">ইমেইল</label><input id="memberEmail" type="email" maxlength="254"></div>
+        <div><label for="memberCode">সদস্য আইডি</label><input id="memberCode" value="স্বয়ংক্রিয়ভাবে তৈরি হবে" readonly></div>
+        <div><label for="memberUnits">মাসিক ইউনিট সংখ্যা *</label><input id="memberUnits" type="number" min="1" max="5" step="1" value="1" required></div>
+        <div><label for="memberMonthlyAmount">মাসিক নির্ধারিত জমা</label><input id="memberMonthlyAmount" value="১,০০০ টাকা" readonly></div>
       </div>
+      <p class="muted">১ ইউনিট = ১,০০০ টাকা। ইউনিট সংখ্যা অনুযায়ী মাসিক জমা স্বয়ংক্রিয়ভাবে হিসাব হবে।</p>
       <div class="actions"><button type="submit">সদস্য সংরক্ষণ</button></div>
     </form>
   </div>
@@ -215,12 +219,12 @@ label{display:block;font-weight:600;font-size:.92rem;margin:8px 0 4px}input,sele
     return data||[];
   }
   async function loadMembers() {
-    const data=await runQuery(db.from('members').select('id,full_name,phone,email,role,units,is_active,created_at').order('full_name'), 'সদস্য');
+    const data=await runQuery(db.from('members').select('id,member_code,full_name,phone,email,role,units,is_active,created_at').order('full_name'), 'সদস্য');
     if(!data)return;
     cachedMembers=data;
     $('memberCount').textContent=money(data.length);
-    $('membersList').innerHTML = '<table><thead><tr><th>নাম</th><th>ফোন</th><th>ইউনিট</th><th>অবস্থা</th><th>ভূমিকা</th>'+(isAdmin?'<th>পরিচালনা</th>':'')+'</tr></thead><tbody>'+
-      data.map(m=>'<tr><td>'+esc(m.full_name)+'</td><td>'+esc(m.phone||'—')+'</td><td>'+money(m.units||1)+'</td><td>'+(m.is_active===false?'নিষ্ক্রিয়':'সক্রিয়')+'</td><td>'+esc(m.role||'member')+'</td>'+(isAdmin?'<td><button type="button" onclick="editMember(\''+esc(m.id)+'\')">Edit</button></td>':'')+'</tr>').join('')+'</tbody></table>';
+    $('membersList').innerHTML = '<table><thead><tr><th>সদস্য আইডি</th><th>নাম</th><th>ফোন</th><th>ইউনিট</th><th>অবস্থা</th><th>ভূমিকা</th>'+(isAdmin?'<th>পরিচালনা</th>':'')+'</tr></thead><tbody>'+
+      data.map(m=>'<tr><td>'+esc(m.member_code||'—')+'</td><td>'+esc(m.full_name)+'</td><td>'+esc(m.phone||'—')+'</td><td>'+money(m.units||1)+'</td><td>'+(m.is_active===false?'নিষ্ক্রিয়':'সক্রিয়')+'</td><td>'+esc(m.role||'member')+'</td>'+(isAdmin?'<td><button type="button" onclick="editMember(\''+esc(m.id)+'\')">Edit</button></td>':'')+'</tr>').join('')+'</tbody></table>';
     $('depositMember').innerHTML='<option value="">সদস্য বাছাই করুন</option>'+data.filter(m=>m.is_active!==false).map(m=>'<option value="'+esc(m.id)+'">'+esc(m.full_name)+'</option>').join('');
   }
   async function renderDepositSummary(data) {
@@ -320,11 +324,16 @@ label{display:block;font-weight:600;font-size:.92rem;margin:8px 0 4px}input,sele
     await loadMembers(); await loadDepositsInner(); await loadInvestments(); await loadPlans();
   });
   window.logout=async()=>{await db.auth.signOut();await checkAdmin();status('লগআউট হয়েছে।');};
+  function updateMemberMonthlyAmount(){const units=Number($('memberUnits').value||0);$('memberMonthlyAmount').value=Number.isInteger(units)&&units>0?money(units*1000)+' টাকা':'সঠিক ইউনিট দিন';}
+  $('memberUnits').addEventListener('input',updateMemberMonthlyAmount);
+  updateMemberMonthlyAmount();
   $('memberForm').addEventListener('submit',async e=>{
     e.preventDefault(); if(!isAdmin)return;
-    const {error}=await db.from('members').insert({full_name:$('memberName').value.trim(),phone:$('memberPhone').value.trim()||null,email:$('memberEmail').value.trim()||null,role:'member'});
+    const units=Number($('memberUnits').value);
+    if(!Number.isInteger(units)||units<1||units>5){status('ইউনিট ১ থেকে ৫-এর মধ্যে পূর্ণ সংখ্যা হতে হবে।',true);return;}
+    const {data:created,error}=await db.from('members').insert({full_name:$('memberName').value.trim(),phone:$('memberPhone').value.trim()||null,email:$('memberEmail').value.trim()||null,units,role:'member'}).select('member_code').single();
     if(error){status('সদস্য যোগ হয়নি: '+error.message,true);return;}
-    e.target.reset();status('সদস্য যোগ হয়েছে।');await loadMembers();
+    e.target.reset();$('memberUnits').value='1';updateMemberMonthlyAmount();status('সদস্য যোগ হয়েছে। সদস্য আইডি: '+(created?.member_code||'তৈরি হয়েছে'));await loadMembers();
   });
   $('depositYear').addEventListener('change', async()=>{await loadDeposits();});
   $('depositForm').addEventListener('submit',async e=>{
