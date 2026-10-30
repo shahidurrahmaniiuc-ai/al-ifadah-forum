@@ -277,7 +277,9 @@ header .wrap{max-width:1440px}
   };
   function updateAdminUI() {
     ['addMemberPanel','addDepositPanel','addInvestmentPanel','addPlanPanel'].forEach(id => $(id).classList.toggle('hidden',!isAdmin));
-    $('loginStatus').textContent = isAdmin ? 'Admin হিসেবে লগইন করা আছে।' : 'Admin লগইন করা নেই।';
+    const isSuperAdmin=String(currentUser?.email||'').toLowerCase()==='shahidur.rahman.iiuc@gmail.com';
+    $('adminManagementPanel').classList.toggle('hidden',!isSuperAdmin);
+    $('loginStatus').textContent = isAdmin ? (isSuperAdmin?'Super Admin হিসেবে লগইন করা আছে।':'Admin হিসেবে লগইন করা আছে।') : 'Admin লগইন করা নেই।';
   }
   async function checkAdmin() {
     const {data:{user}} = await db.auth.getUser();
