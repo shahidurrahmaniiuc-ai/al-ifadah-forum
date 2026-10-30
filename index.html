@@ -311,14 +311,16 @@ label{display:block;font-weight:600;font-size:.92rem;margin:8px 0 4px}input,sele
   };
   async function loadForumPdfs() {
     for (const [key, item] of Object.entries(forumPdfFiles)) {
-      const {data,error} = await db.storage.from('forum-documents').createSignedUrl(item.path, 60*60*24*7);
+      const {data:files,error} = await db.storage.from('forum-documents').list('', {search:item.path});
       const link = $(item.link), label = $(item.status);
-      if (error) {
-        label.textContent = 'PDF এখনো আপলোড করা হয়নি।';
+      const exists = !error && (files||[]).some(file => file.name === item.path);
+      if (!exists) {
+        label.textContent = error ? 'PDF-এর তথ্য পাওয়া যায়নি।' : 'PDF এখনো আপলোড করা হয়নি।';
         link.classList.add('hidden');
       } else {
+        const {data} = db.storage.from('forum-documents').getPublicUrl(item.path);
         label.textContent = 'PDF প্রস্তুত।';
-        link.href = data.signedUrl;
+        link.href = data.publicUrl;
         link.classList.remove('hidden');
       }
       $(item.panel).classList.toggle('hidden', !isAdmin);
