@@ -81,7 +81,7 @@ label{display:block;font-weight:600;font-size:.92rem;margin:8px 0 4px}input,sele
   <div class="panel"><h2>জমার রেকর্ড</h2><div id="depositsList" class="table-wrap"></div></div>
   <div id="addDepositPanel" class="panel hidden"><h2>জমা যোগ (Admin)</h2>
     <form id="depositForm"><div class="grid">
-      <div><label for="depositMember">সদস্য *</label><select id="depositMember" required></select></div>
+      <div><label for="depositMemberSearch">সদস্যের নাম লিখুন বা তালিকা থেকে বাছাই করুন *</label><input id="depositMemberSearch" list="depositMemberOptions" placeholder="সদস্যের নাম লিখুন..." autocomplete="off" required><datalist id="depositMemberOptions"></datalist><input id="depositMember" type="hidden"></div>
       <div><label for="depositUnits">জমার ইউনিট সংখ্যা *</label><input id="depositUnits" type="number" min="1" step="1" value="1" required></div>
       <div><label for="depositAmountDisplay">জমার টাকার পরিমাণ</label><input id="depositAmountDisplay" value="১,০০০ টাকা" readonly></div>
       <div><label for="depositDate">তারিখ</label><input id="depositDate" type="date"></div>
@@ -219,6 +219,7 @@ label{display:block;font-weight:600;font-size:.92rem;margin:8px 0 4px}input,sele
     if(error) { status(label+' লোড হয়নি: '+error.message,true); return null; }
     return data||[];
   }
+  $('depositMemberSearch').addEventListener('input',()=>{ const typed=$('depositMemberSearch').value.trim(); const match=cachedMembers.filter(m=>m.is_active!==false).find(m=>typed===m.full_name+' ('+(m.member_code||m.id.slice(0,8))+')'); $('depositMember').value=match?match.id:''; });
   async function loadMembers() {
     const data=await runQuery(db.from('members').select('id,member_code,full_name,phone,email,role,units,is_active,created_at').order('full_name'), 'সদস্য');
     if(!data)return;
@@ -226,7 +227,7 @@ label{display:block;font-weight:600;font-size:.92rem;margin:8px 0 4px}input,sele
     $('memberCount').textContent=money(data.length);
     $('membersList').innerHTML = '<table><thead><tr><th>সদস্য আইডি</th><th>নাম</th><th>ফোন</th><th>ইউনিট</th><th>অবস্থা</th><th>ভূমিকা</th>'+(isAdmin?'<th>পরিচালনা</th>':'')+'</tr></thead><tbody>'+
       data.map(m=>'<tr><td>'+esc(m.member_code||'—')+'</td><td>'+esc(m.full_name)+'</td><td>'+esc(m.phone||'—')+'</td><td>'+money(m.units||1)+'</td><td>'+(m.is_active===false?'নিষ্ক্রিয়':'সক্রিয়')+'</td><td>'+esc(m.role||'member')+'</td>'+(isAdmin?'<td><button type="button" onclick="editMember(\''+esc(m.id)+'\')">Edit</button></td>':'')+'</tr>').join('')+'</tbody></table>';
-    $('depositMember').innerHTML='<option value="">সদস্য বাছাই করুন</option>'+data.filter(m=>m.is_active!==false).map(m=>'<option value="'+esc(m.id)+'">'+esc(m.full_name)+'</option>').join('');
+    const activeMembers=data.filter(m=>m.is_active!==false); $('depositMemberOptions').innerHTML=activeMembers.map(m=>'<option value="'+esc(m.full_name+' ('+(m.member_code||m.id.slice(0,8))+')')+'"></option>').join(''); $('depositMemberSearch').value=''; $('depositMember').value='';
   }
   async function renderDepositSummary(data) {
     const years=[...new Set([new Date().getFullYear(),...data.map(d=>Number(String(d.deposit_date||'').slice(0,4))).filter(y=>Number.isFinite(y)&&y>0)])].sort((a,b)=>b-a);
