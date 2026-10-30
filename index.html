@@ -294,19 +294,20 @@ header .wrap{max-width:1440px}
       '<div class="stat"><small>নাম</small><strong>'+esc(member.full_name||'—')+'</strong></div>'+
       '<div class="stat"><small>মাসিক ইউনিট</small><strong>'+money(member.units||0)+'</strong></div>'+
       '<div class="stat"><small>মোট জমার রেকর্ড</small><strong>'+money((data.deposits||[]).length)+'</strong></div>';
-    const nominee=member.nominee||{};
-    const rows=[
-      ['নমিনির নাম',nominee.name||'—'],['সম্পর্ক',nominee.relation||'—'],
-      ['মোবাইল',nominee.phone||'—'],['NID',nominee.nid||'—']
-    ];
-    const deposits=(data.deposits||[]).map(x=>[x.deposit_date||'—',money(x.amount)+' টাকা',x.note||'—']);
-    const history=(data.unit_history||[]).map(x=>[x.changed_at||'—',money(x.old_units),money(x.new_units),x.note||'—']);
+    const members=(data.members||[]).map(m=>[
+      m.member_code||'—',m.full_name||'—',m.phone||'—',m.email||'—',
+      money(m.units||0),m.is_active===false?'নিষ্ক্রিয়':'সক্রিয়',
+      m.nominee_name||'—',m.nominee_relation||'—',m.nominee_phone||'—',m.nominee_nid||'—'
+    ]);
+    const memberNames=Object.fromEntries((data.members||[]).map(m=>[m.id,m.full_name||m.member_code||'সদস্য']));
+    const deposits=(data.deposits||[]).map(x=>[memberNames[x.member_id]||'সদস্য',x.deposit_date||'—',money(x.amount)+' টাকা',x.note||'—']);
+    const history=(data.unit_history||[]).map(x=>[memberNames[x.member_id]||'সদস্য',x.changed_at||'—',money(x.old_units),money(x.new_units),x.note||'—']);
     const investments=(data.investments||[]).map(x=>[x.title||'—',money(x.amount)+' টাকা',x.investment_date||'—',x.investment_end_date||'—',x.note||'—']);
     const plans=(data.plans||[]).map(x=>[x.title||'—',x.description||'—',money(x.target_amount)+' টাকা',x.status||'—']);
     $('memberPrivateDetails').innerHTML=
-      '<h3>নমিনির তথ্য</h3>'+tableHtml(['বিবরণ','তথ্য'],rows)+
-      '<h3>আপনার জমার ইতিহাস</h3>'+tableHtml(['তারিখ','পরিমাণ','নোট'],deposits)+
-      '<h3>ইউনিট পরিবর্তনের ইতিহাস</h3>'+tableHtml(['তারিখ','আগের ইউনিট','নতুন ইউনিট','নোট'],history)+
+      '<h3>সকল সদস্যের তথ্য ও নমিনি</h3>'+tableHtml(['সদস্য ID','নাম','মোবাইল','ইমেইল','ইউনিট','অবস্থা','নমিনি','সম্পর্ক','নমিনির মোবাইল','নমিনির NID'],members)+
+      '<h3>সকল সদস্যের জমার ইতিহাস</h3>'+tableHtml(['সদস্য','তারিখ','পরিমাণ','নোট'],deposits)+
+      '<h3>সকল সদস্যের ইউনিট পরিবর্তনের ইতিহাস</h3>'+tableHtml(['সদস্য','তারিখ','আগের ইউনিট','নতুন ইউনিট','নোট'],history)+
       '<h3>ফোরামের বিনিয়োগ</h3>'+tableHtml(['প্রকল্প','পরিমাণ','শুরু','শেষ','নোট'],investments)+
       '<h3>ফোরামের পরিকল্পনা</h3>'+tableHtml(['শিরোনাম','বিবরণ','লক্ষ্যমাত্রা','অবস্থা'],plans);
   }
