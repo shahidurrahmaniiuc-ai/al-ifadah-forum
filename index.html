@@ -62,7 +62,7 @@ label{display:block;font-weight:600;font-size:.92rem;margin:8px 0 4px}input,sele
         <div><label for="memberPhone">ফোন</label><input id="memberPhone" maxlength="40"></div>
         <div><label for="memberEmail">ইমেইল</label><input id="memberEmail" type="email" maxlength="254"></div>
         <div><label for="memberCode">সদস্য আইডি</label><input id="memberCode" value="স্বয়ংক্রিয়ভাবে তৈরি হবে" readonly></div>
-        <div><label for="memberUnits">মাসিক ইউনিট সংখ্যা *</label><input id="memberUnits" type="number" min="1" max="5" step="1" value="1" required></div>
+        <div><label for="memberUnits">মাসিক ইউনিট সংখ্যা *</label><input id="memberUnits" type="number" min="1" step="1" value="1" required></div>
         <div><label for="memberMonthlyAmount">মাসিক নির্ধারিত জমা</label><input id="memberMonthlyAmount" value="১,০০০ টাকা" readonly></div>
       </div>
       <p class="muted">১ ইউনিট = ১,০০০ টাকা। ইউনিট সংখ্যা অনুযায়ী মাসিক জমা স্বয়ংক্রিয়ভাবে হিসাব হবে।</p>
@@ -331,7 +331,7 @@ label{display:block;font-weight:600;font-size:.92rem;margin:8px 0 4px}input,sele
   $('memberForm').addEventListener('submit',async e=>{
     e.preventDefault(); if(!isAdmin)return;
     const units=Number($('memberUnits').value);
-    if(!Number.isInteger(units)||units<1||units>5){status('ইউনিট ১ থেকে ৫-এর মধ্যে পূর্ণ সংখ্যা হতে হবে।',true);return;}
+    if(!Number.isInteger(units)||units<1){status('ইউনিট ১ বা তার বেশি পূর্ণ সংখ্যা হতে হবে।',true);return;}
     const {data:created,error}=await db.from('members').insert({full_name:$('memberName').value.trim(),phone:$('memberPhone').value.trim()||null,email:$('memberEmail').value.trim()||null,units,role:'member'}).select('member_code').single();
     if(error){status('সদস্য যোগ হয়নি: '+error.message,true);return;}
     e.target.reset();$('memberUnits').value='1';updateMemberMonthlyAmount();status('সদস্য যোগ হয়েছে। সদস্য আইডি: '+(created?.member_code||'তৈরি হয়েছে'));await loadMembers();
