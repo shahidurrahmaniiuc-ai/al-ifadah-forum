@@ -4,7 +4,7 @@ const json = (data, status = 200) => new Response(JSON.stringify(data), {
 });
 
 const b64url = bytes => btoa(String.fromCharCode(...new Uint8Array(bytes)))
-  .replace(/\\+/g, "-").replace(/\\//g, "_").replace(/=+$/g, "");
+  .replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/g, "");
 
 async function sessionKey(secret) {
   return crypto.subtle.importKey("raw", new TextEncoder().encode(secret),
@@ -61,7 +61,7 @@ export default {
       let input;
       try { input = await request.json(); } catch { return json({ error: "অনুরোধটি সঠিক নয়।" }, 400); }
       const email = String(input.email || "").trim().toLowerCase();
-      const phone = String(input.phone || "").replace(/[\\s()-]/g, "");
+      const phone = String(input.phone || "").replace(/[\s()-]/g, "");
       if (!email || !phone || email.length > 254 || phone.length > 40) {
         return json({ error: "ইমেইল ও মোবাইল নম্বর সঠিকভাবে দিন।" }, 400);
       }
