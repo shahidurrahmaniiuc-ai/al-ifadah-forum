@@ -36,7 +36,7 @@ async function verifySession(token, secret) {
 
 async function getMember(env, id) {
   const endpoint = new URL("/rest/v1/members", env.SUPABASE_URL);
-  endpoint.searchParams.set("select", "id,member_code,full_name,email,phone,units,is_active");
+  endpoint.searchParams.set("select", "id,member_code,full_name,email,phone,units,is_active,nominee_name,nominee_phone,nominee_nid,nominee_relation");
   endpoint.searchParams.set("id", "eq." + id);
   endpoint.searchParams.set("is_active", "eq.true");
   endpoint.searchParams.set("limit", "1");
@@ -94,10 +94,34 @@ export default {
       try {
         const member = await getMember(env, session.sub);
         if (!member) return json({ error: "সদস্য অ্যাকাউন্ট সক্রিয় নেই।" }, 403);
+        const headers = {
+          apikey: env.SUPABASE_SERVICE_ROLE_KEY,
+          authorization: "Bearer " + env.SUPABASE_SERVICE_ROLE_KEY
+        };
+        const readRows = async (table, select, filters = [], order = "") => {
+          const endpoint = new URL("/rest/v1/" + table, env.SUPABASE_URL);
+          endpoint.searchParams.set("select", select);
+          for (const [key, value] of filters) endpoint.searchParams.set(key, value);
+          if (order) endpoint.searchParams.set("order", order);
+          endpoint.searchParams.set("limit", "500");
+          const response = await fetch(endpoint, { headers });
+          if (!response.ok) throw new Error("database");
+          return response.json();
+        };
+        const [deposits, investments, plans, unitHistory] = await Promise.all([
+          readRows("deposits", "amount,deposit_date,note", [["member_id", "eq." + member.id]], "deposit_date.desc"),
+          readRows("investments", "title,amount,investment_date,investment_end_date,note", [], "investment_date.desc"),
+          readRows("plans", "title,description,target_amount,status,created_at", [], "created_at.desc"),
+          readRows("member_unit_history", "old_units,new_units,changed_at,note", [["member_id", "eq." + member.id]], "changed_at.desc")
+        ]);
         return json({ member: {
           member_code: member.member_code, full_name: member.full_name,
-          email: member.email, phone: member.phone, units: member.units
-        }});
+          email: member.email, phone: member.phone, units: member.units,
+          nominee: {
+            name: member.nominee_name, phone: member.nominee_phone,
+            nid: member.nominee_nid, relation: member.nominee_relation
+          }
+        }, deposits, investments, plans, unit_history: unitHistory });
       } catch { return json({ error: "সদস্যের তথ্য আনা যায়নি।" }, 503); }
     }
 
