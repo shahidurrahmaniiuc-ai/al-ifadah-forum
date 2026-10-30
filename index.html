@@ -212,7 +212,8 @@ header .wrap{max-width:1440px}
     <h2>সদস্য ড্যাশবোর্ড</h2>
     <div id="memberWelcome" class="status"></div>
     <div class="stats" id="memberSummary"></div>
-    <p class="muted">এই প্রাথমিক সংস্করণে শুধু পরিচিতির তথ্য দেখানো হচ্ছে। ব্যক্তিগত হিসাব ও অন্যান্য তথ্য আলাদা অনুমতিনিয়ন্ত্রিত API প্রস্তুত হলে যুক্ত হবে।</p>
+    <div id="memberPrivateDetails" class="panel"></div>
+    <p class="muted">ব্যক্তিগত তথ্য শুধু লগইন করা সদস্যের ড্যাশবোর্ডে দেখানো হয়।</p>
     <div class="actions"><button type="button" class="secondary" id="memberLogoutButton">লগআউট</button></div>
   </div>
 </section>
@@ -280,17 +281,34 @@ header .wrap{max-width:1440px}
       clearMemberSession(data.error || 'সেশন যাচাই করা যায়নি। আবার লগইন করুন।');
       return false;
     }
-    renderMemberDashboard(data.member);
+    renderMemberDashboard(data);
     return true;
   }
-  function renderMemberDashboard(member) {
+  function renderMemberDashboard(data) {
+    const member=data.member||data;
     $('memberLoginPanel').classList.add('hidden');
     $('memberDashboard').classList.remove('hidden');
     $('memberWelcome').textContent = 'স্বাগতম, ' + (member.full_name || 'সদস্য');
     $('memberSummary').innerHTML =
       '<div class="stat"><small>সদস্য আইডি</small><strong>'+esc(member.member_code||'—')+'</strong></div>'+
       '<div class="stat"><small>নাম</small><strong>'+esc(member.full_name||'—')+'</strong></div>'+
-      '<div class="stat"><small>মাসিক ইউনিট</small><strong>'+money(member.units||0)+'</strong></div>';
+      '<div class="stat"><small>মাসিক ইউনিট</small><strong>'+money(member.units||0)+'</strong></div>'+
+      '<div class="stat"><small>মোট জমার রেকর্ড</small><strong>'+money((data.deposits||[]).length)+'</strong></div>';
+    const nominee=member.nominee||{};
+    const rows=[
+      ['নমিনির নাম',nominee.name||'—'],['সম্পর্ক',nominee.relation||'—'],
+      ['মোবাইল',nominee.phone||'—'],['NID',nominee.nid||'—']
+    ];
+    const deposits=(data.deposits||[]).map(x=>[x.deposit_date||'—',money(x.amount)+' টাকা',x.note||'—']);
+    const history=(data.unit_history||[]).map(x=>[x.changed_at||'—',money(x.old_units),money(x.new_units),x.note||'—']);
+    const investments=(data.investments||[]).map(x=>[x.title||'—',money(x.amount)+' টাকা',x.investment_date||'—',x.investment_end_date||'—',x.note||'—']);
+    const plans=(data.plans||[]).map(x=>[x.title||'—',x.description||'—',money(x.target_amount)+' টাকা',x.status||'—']);
+    $('memberPrivateDetails').innerHTML=
+      '<h3>নমিনির তথ্য</h3>'+tableHtml(['বিবরণ','তথ্য'],rows)+
+      '<h3>আপনার জমার ইতিহাস</h3>'+tableHtml(['তারিখ','পরিমাণ','নোট'],deposits)+
+      '<h3>ইউনিট পরিবর্তনের ইতিহাস</h3>'+tableHtml(['তারিখ','আগের ইউনিট','নতুন ইউনিট','নোট'],history)+
+      '<h3>ফোরামের বিনিয়োগ</h3>'+tableHtml(['প্রকল্প','পরিমাণ','শুরু','শেষ','নোট'],investments)+
+      '<h3>ফোরামের পরিকল্পনা</h3>'+tableHtml(['শিরোনাম','বিবরণ','লক্ষ্যমাত্রা','অবস্থা'],plans);
   }
   $('memberLoginForm').addEventListener('submit', async e => {
     e.preventDefault();
