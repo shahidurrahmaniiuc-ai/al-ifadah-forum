@@ -212,6 +212,28 @@ header .wrap{max-width:1440px}
     </div>
     <div id="loginStatus" class="status" aria-live="polite">লগইন করা নেই।</div>
   </div>
+  <div class="panel">
+    <h2>সদস্য ওয়েব অ্যাকাউন্ট যুক্ত করুন</h2>
+    <p class="muted">আগে সদস্যের সংরক্ষিত ইমেইল দিয়ে অ্যাকাউন্ট তৈরি করুন এবং ইমেইল নিশ্চিত করুন। এরপর ID ও মোবাইল দিয়ে সদস্য রেকর্ডের সঙ্গে যুক্ত করুন।</p>
+    <form id="memberAccountForm"><div class="grid">
+      <div><label for="linkMemberCode">সদস্য ID *</label><input id="linkMemberCode" required placeholder="IF-0002"></div>
+      <div><label for="linkMemberPhone">সদস্যের মোবাইল *</label><input id="linkMemberPhone" required></div>
+      <div><label for="linkMemberEmail">সদস্যের ইমেইল *</label><input id="linkMemberEmail" type="email" required></div>
+      <div><label for="linkMemberPassword">নিজের পাসওয়ার্ড *</label><input id="linkMemberPassword" type="password" minlength="12" required autocomplete="new-password"></div>
+    </div><div class="actions"><button type="submit">অ্যাকাউন্ট যুক্ত করুন</button></div></form>
+    <p id="memberAccountStatus" class="status" aria-live="polite">অ্যাকাউন্ট তৈরি করার পর ইমেইল নিশ্চিত করে আবার এই ফর্ম জমা দিন।</p>
+  </div>
+  <div id="adminManagementPanel" class="panel hidden">
+    <h2>Admin Management (শুধু Super Admin)</h2>
+    <p class="muted">শুধু আগে ওয়েব অ্যাকাউন্ট যুক্ত করা সক্রিয় ফোরাম সদস্যকে Admin করা যাবে।</p>
+    <form id="roleManagementForm"><div class="grid">
+      <div><label for="roleMemberCode">সদস্য ID *</label><input id="roleMemberCode" required placeholder="IF-0002"></div>
+      <div><label for="roleMemberPhone">সদস্যের মোবাইল *</label><input id="roleMemberPhone" required></div>
+      <div><label for="roleMemberEmail">সদস্যের ইমেইল *</label><input id="roleMemberEmail" type="email" required></div>
+      <div><label for="roleMemberValue">অনুমতি</label><select id="roleMemberValue"><option value="admin">Admin দিন</option><option value="member">Admin বাতিল করুন</option></select></div>
+    </div><div class="actions"><button type="submit">অনুমতি সংরক্ষণ</button></div></form>
+    <p id="roleManagementStatus" class="status" aria-live="polite"></p>
+  </div>
   <div class="panel"><h2>নিরাপত্তা সংক্রান্ত নোট</h2><p>ডেটাবেসের RLS নীতিই আসল অনুমতি নিয়ন্ত্রণ করে। শুধু এই পৃষ্ঠার Admin বোতাম লুকানো নিরাপত্তার বিকল্প নয়। Admin অনুমতি যাচাই না হওয়া পর্যন্ত পরিবর্তনের ফর্ম দেখানো হবে না।</p></div>
 </section>
 </main>
@@ -382,6 +404,42 @@ header .wrap{max-width:1440px}
     await renderDepositSummary(data);
   }
   window.loadInvestments=loadInvestments; window.loadPlans=loadPlans;
+  $('memberAccountForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    const box=$('memberAccountStatus');
+    const email=$('linkMemberEmail').value.trim().toLowerCase();
+    const password=$('linkMemberPassword').value;
+    if(password.length<12){box.textContent='কমপক্ষে ১২ অক্ষরের পাসওয়ার্ড দিন।';return;}
+    box.textContent='অ্যাকাউন্ট যাচাই করা হচ্ছে…';
+    const {data:signInData,error:signInError}=await db.auth.signInWithPassword({email,password});
+    if(signInError){
+      const {error:signUpError}=await db.auth.signUp({email,password,options:{emailRedirectTo:window.location.origin}});
+      if(signUpError){box.textContent='অ্যাকাউন্ট তৈরি হয়নি: '+signUpError.message;return;}
+      box.textContent='অ্যাকাউন্ট তৈরির অনুরোধ পাঠানো হয়েছে। ইমেইলে আসা লিংক খুলে নিশ্চিত করুন। এরপর একই তথ্য দিয়ে আবার এই ফর্ম জমা দিন।';
+      return;
+    }
+    const {data:claimData,error:claimError}=await db.rpc('claim_forum_member_account',{
+      p_member_code:$('linkMemberCode').value.trim(),
+      p_phone:$('linkMemberPhone').value.trim()
+    });
+    if(claimError){box.textContent='সদস্য অ্যাকাউন্ট যুক্ত হয়নি: '+claimError.message;await db.auth.signOut();return;}
+    await db.auth.signOut();
+    $('linkMemberPassword').value='';
+    box.textContent='সফল! সদস্য অ্যাকাউন্ট যুক্ত হয়েছে। Super Admin অনুমতি দিলে Admin সুবিধা পাবেন।';
+  });
+  $('roleManagementForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    if(!currentUser){$('roleManagementStatus').textContent='আগে Super Admin হিসেবে লগইন করুন।';return;}
+    $('roleManagementStatus').textContent='অনুমতি যাচাই ও সংরক্ষণ হচ্ছে…';
+    const {data,error}=await db.rpc('set_forum_member_role',{
+      p_member_code:$('roleMemberCode').value.trim(),
+      p_phone:$('roleMemberPhone').value.trim(),
+      p_email:$('roleMemberEmail').value.trim(),
+      p_role:$('roleMemberValue').value
+    });
+    $('roleManagementStatus').textContent=error?'অনুমতি পরিবর্তন হয়নি: '+error.message:($('roleMemberValue').value==='admin'?'সদস্যকে Admin করা হয়েছে।':'সদস্যের Admin অনুমতি বাতিল হয়েছে।');
+    if(!error){e.target.reset();await loadMembers();}
+  });
   $('forgotPasswordBtn').addEventListener('click', async () => {
     const email=$('adminEmail').value.trim();
     if(!email){$('recoveryStatus').textContent='আগে Admin ইমেইল লিখুন, তারপর এই বোতামে চাপ দিন।';return;}
