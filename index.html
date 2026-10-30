@@ -255,6 +255,11 @@ header .wrap{max-width:1440px}
       '</tbody></table>';
   }
   window.showSection = id => {
+    const privateSections = ['members','deposits','investments','plans'];
+    if (privateSections.includes(id) && !isAdmin) {
+      status('এই অংশটি দেখতে Admin লগইন প্রয়োজন।', true);
+      id='home';
+    }
     document.querySelectorAll('.section').forEach(s=>s.classList.add('hidden'));
     $(id)?.classList.remove('hidden');
     document.querySelectorAll('.sidebar .nav-item').forEach(btn=>btn.classList.toggle('active',btn.dataset.section===id));
@@ -266,6 +271,10 @@ header .wrap{max-width:1440px}
   };
   function updateAdminUI() {
     ['addMemberPanel','addDepositPanel','addInvestmentPanel','addPlanPanel'].forEach(id => $(id).classList.toggle('hidden',!isAdmin));
+    document.querySelectorAll('.sidebar .nav-item').forEach(btn => {
+      const privateSection=['members','deposits','investments','plans'].includes(btn.dataset.section);
+      btn.classList.toggle('hidden', privateSection && !isAdmin);
+    });
     const isSuperAdmin=String(currentUser?.email||'').toLowerCase()==='shahidur.rahman.iiuc@gmail.com';
     $('adminManagementPanel').classList.toggle('hidden',!isSuperAdmin);
     $('loginStatus').textContent = isAdmin ? (isSuperAdmin?'Super Admin হিসেবে লগইন করা আছে।':'Admin হিসেবে লগইন করা আছে।') : 'Admin লগইন করা নেই।';
@@ -529,12 +538,22 @@ header .wrap{max-width:1440px}
   async function init(){
     try{
       await checkAdmin();
-      await loadMembers();
-      await loadDepositsInner();
-      await loadInvestments();
-      await loadPlans();
+      // Public visitors must not trigger reads of member-level financial records.
+      // Aggregate public statistics will be connected to approved database views
+      // after the existing RLS policies and schema are verified.
+      $('memberCount').textContent='সদস্যদের জন্য';
+      $('depositCount').textContent='সদস্যদের জন্য';
+      $('investmentCount').textContent='সদস্যদের জন্য';
       await loadForumPdfs();
-      status('ডেটাবেস থেকে তথ্য লোড হয়েছে।');
+      if(isAdmin){
+        await loadMembers();
+        await loadDepositsInner();
+        await loadInvestments();
+        await loadPlans();
+        status('Admin হিসেবে ডেটাবেসের তথ্য লোড হয়েছে।');
+      } else {
+        status('পাবলিক ড্যাশবোর্ড প্রস্তুত। অভ্যন্তরীণ তথ্য দেখতে Admin লগইন করুন।');
+      }
     }catch(err){status('সংযোগ সমস্যা: '+(err?.message||String(err)),true);}
   }
   init();
