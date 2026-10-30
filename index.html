@@ -32,6 +32,7 @@ label{display:block;font-weight:600;font-size:.92rem;margin:8px 0 4px}input,sele
   <button class="secondary" onclick="showSection('deposits')">জমা</button>
   <button class="secondary" onclick="showSection('investments')">বিনিয়োগ</button>
   <button class="secondary" onclick="showSection('plans')">পরিকল্পনা</button>
+  <button class="secondary" onclick="showSection('documents')">গঠনতন্ত্র ও ফরম</button>
   <button class="secondary" onclick="showSection('admin')">Admin লগইন</button>
 </nav>
 <div id="globalStatus" class="status" role="status">ডেটাবেস সংযোগ পরীক্ষা করা হচ্ছে…</div>
@@ -101,6 +102,37 @@ label{display:block;font-weight:600;font-size:.92rem;margin:8px 0 4px}input,sele
   </div>
 </section>
 
+
+<section id="documents" class="section hidden">
+  <div class="panel">
+    <h2>গঠনতন্ত্র ও সদস্য আবেদন ফরম</h2>
+    <p class="muted">এখান থেকে ফোরামের গুরুত্বপূর্ণ PDF দেখা ও ডাউনলোড করা যাবে।</p>
+    <div class="grid">
+      <div class="stat">
+        <strong>গঠনতন্ত্র</strong>
+        <p id="constitutionDocStatus" class="muted">ফাইলের তথ্য লোড হচ্ছে…</p>
+        <div class="actions"><a id="constitutionDocLink" class="hidden" target="_blank" rel="noopener">PDF দেখুন / ডাউনলোড</a></div>
+        <div id="constitutionUploadPanel" class="hidden">
+          <label for="constitutionFile">গঠনতন্ত্রের PDF নির্বাচন করুন</label>
+          <input id="constitutionFile" type="file" accept="application/pdf,.pdf">
+          <div class="actions"><button type="button" onclick="uploadForumPdf('constitution')">আপলোড / পরিবর্তন</button></div>
+        </div>
+      </div>
+      <div class="stat">
+        <strong>সদস্য আবেদন ফরম</strong>
+        <p id="applicationDocStatus" class="muted">ফাইলের তথ্য লোড হচ্ছে…</p>
+        <div class="actions"><a id="applicationDocLink" class="hidden" target="_blank" rel="noopener">PDF দেখুন / ডাউনলোড</a></div>
+        <div id="applicationUploadPanel" class="hidden">
+          <label for="applicationFile">আবেদন ফরমের PDF নির্বাচন করুন</label>
+          <input id="applicationFile" type="file" accept="application/pdf,.pdf">
+          <div class="actions"><button type="button" onclick="uploadForumPdf('application')">আপলোড / পরিবর্তন</button></div>
+        </div>
+      </div>
+    </div>
+    <p class="muted">শুধু PDF ফাইল আপলোড করা যাবে। ফাইলের নাম স্বয়ংক্রিয়ভাবে নির্ধারিত হবে।</p>
+  </div>
+</section>
+
 <section id="admin" class="section hidden">
   <div class="panel"><h2>Admin লগইন</h2><p class="muted">আপনার Supabase Auth ইমেইল ও পাসওয়ার্ড ব্যবহার করুন। এখানে পাসওয়ার্ড সংরক্ষণ করা হয় না।</p>
     <form id="loginForm"><div class="grid">
@@ -146,6 +178,7 @@ label{display:block;font-weight:600;font-size:.92rem;margin:8px 0 4px}input,sele
     if (id==='deposits') loadDeposits();
     if (id==='investments') loadInvestments();
     if (id==='plans') loadPlans();
+    if (id==='documents') loadForumPdfs();
   };
   function updateAdminUI() {
     ['addMemberPanel','addDepositPanel','addInvestmentPanel','addPlanPanel'].forEach(id => $(id).classList.toggle('hidden',!isAdmin));
@@ -239,6 +272,40 @@ label{display:block;font-weight:600;font-size:.92rem;margin:8px 0 4px}input,sele
     if(error){status('পরিকল্পনা সংরক্ষণ হয়নি: '+error.message,true);return;}
     e.target.reset();status('পরিকল্পনা সংরক্ষণ হয়েছে।');await loadPlans();
   });
+
+  const forumPdfFiles = {
+    constitution: {path:'constitution.pdf', input:'constitutionFile', status:'constitutionDocStatus', link:'constitutionDocLink', panel:'constitutionUploadPanel'},
+    application: {path:'membership-application.pdf', input:'applicationFile', status:'applicationDocStatus', link:'applicationDocLink', panel:'applicationUploadPanel'}
+  };
+  async function loadForumPdfs() {
+    for (const [key, item] of Object.entries(forumPdfFiles)) {
+      const {data,error} = await db.storage.from('forum-documents').createSignedUrl(item.path, 60*60*24*7);
+      const link = $(item.link), label = $(item.status);
+      if (error) {
+        label.textContent = 'PDF এখনো আপলোড করা হয়নি।';
+        link.classList.add('hidden');
+      } else {
+        label.textContent = 'PDF প্রস্তুত।';
+        link.href = data.signedUrl;
+        link.classList.remove('hidden');
+      }
+      $(item.panel).classList.toggle('hidden', !isAdmin);
+    }
+  }
+  window.uploadForumPdf = async function(key) {
+    if (!isAdmin || !forumPdfFiles[key]) { status('শুধু Admin PDF আপলোড করতে পারবেন।', true); return; }
+    const item = forumPdfFiles[key], file = $(item.input).files?.[0];
+    if (!file) { status('আগে একটি PDF ফাইল নির্বাচন করুন।', true); return; }
+    if (file.type !== 'application/pdf' && !file.name.toLowerCase().endsWith('.pdf')) { status('শুধু PDF ফাইল গ্রহণযোগ্য।', true); return; }
+    if (file.size > 15 * 1024 * 1024) { status('ফাইলের আকার ১৫ MB-এর কম হতে হবে।', true); return; }
+    status('PDF আপলোড হচ্ছে…');
+    const {error} = await db.storage.from('forum-documents').upload(item.path, file, {upsert:true, contentType:'application/pdf'});
+    if (error) { status('PDF আপলোড হয়নি: '+error.message, true); return; }
+    $(item.input).value = '';
+    status('PDF সফলভাবে আপলোড হয়েছে।');
+    await loadForumPdfs();
+  };
+
   db.auth.onAuthStateChange(()=>{setTimeout(async()=>{await checkAdmin();},0);});
   async function init(){
     try{
@@ -247,6 +314,7 @@ label{display:block;font-weight:600;font-size:.92rem;margin:8px 0 4px}input,sele
       await loadDepositsInner();
       await loadInvestments();
       await loadPlans();
+      await loadForumPdfs();
       status('ডেটাবেস থেকে তথ্য লোড হয়েছে।');
     }catch(err){status('সংযোগ সমস্যা: '+(err?.message||String(err)),true);}
   }
