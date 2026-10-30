@@ -67,6 +67,7 @@ header .wrap{max-width:1440px}
     <button class="nav-item" onclick="showSection('investments')" data-section="investments"><span>▥</span> বিনিয়োগ</button>
     <button class="nav-item" onclick="showSection('plans')" data-section="plans"><span>☷</span> পরিকল্পনা</button>
     <button class="nav-item" onclick="showSection('documents')" data-section="documents"><span>▤</span> গঠনতন্ত্র ও ফরম</button>
+    <button class="nav-item" onclick="showSection('memberPortal')" data-section="memberPortal"><span>♙</span> সদস্য লগইন</button>
     <button class="nav-item" onclick="showSection('admin')" data-section="admin"><span>⚙</span> Admin লগইন</button>
   </nav>
   <div class="sidebar-foot">তাকওয়া · স্বচ্ছতা · আমানতদারিতা</div>
@@ -196,6 +197,26 @@ header .wrap{max-width:1440px}
   </div>
 </section>
 
+<section id="memberPortal" class="section hidden">
+  <div class="panel" id="memberLoginPanel">
+    <h2>সদস্য লগইন</h2>
+    <p class="muted">আপনার নিবন্ধিত ইমেইল ও মোবাইল নম্বর দিন।</p>
+    <form id="memberLoginForm"><div class="grid">
+      <div><label for="memberLoginEmail">ইমেইল</label><input id="memberLoginEmail" type="email" autocomplete="email" required maxlength="254"></div>
+      <div><label for="memberLoginPhone">মোবাইল নম্বর</label><input id="memberLoginPhone" type="tel" autocomplete="tel" required maxlength="40"></div>
+    </div><div class="actions"><button id="memberLoginButton" type="submit">সদস্য হিসেবে লগইন</button></div></form>
+    <p id="memberLoginStatus" class="status" aria-live="polite">লগইন করা নেই।</p>
+    <p class="muted">ইমেইল ও মোবাইল নম্বর—দুটিই জানা থাকলে অন্য কেউ আপনার পরিচয়ে প্রবেশ করতে পারে।</p>
+  </div>
+  <div class="panel hidden" id="memberDashboard">
+    <h2>সদস্য ড্যাশবোর্ড</h2>
+    <div id="memberWelcome" class="status"></div>
+    <div class="stats" id="memberSummary"></div>
+    <p class="muted">এই প্রাথমিক সংস্করণে শুধু পরিচিতির তথ্য দেখানো হচ্ছে। ব্যক্তিগত হিসাব ও অন্যান্য তথ্য আলাদা অনুমতিনিয়ন্ত্রিত API প্রস্তুত হলে যুক্ত হবে।</p>
+    <div class="actions"><button type="button" class="secondary" id="memberLogoutButton">লগআউট</button></div>
+  </div>
+</section>
+
 <section id="admin" class="section hidden">
   <div class="panel"><h2>Admin লগইন</h2><p class="muted">আপনার Supabase Auth ইমেইল ও পাসওয়ার্ড ব্যবহার করুন। এখানে পাসওয়ার্ড সংরক্ষণ করা হয় না।</p>
     <form id="loginForm"><div class="grid">
@@ -236,6 +257,67 @@ header .wrap{max-width:1440px}
   const SUPABASE_URL = 'https://zwzjfmxcvbfeaqlwolmu.supabase.co';
   const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_D-M3Ol4MaxRG4skdkQ6xzg_fA0Zoico';
   const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+  const MEMBER_API = window.location.origin;
+  let memberSessionToken = null;
+  let memberSessionExpiry = null;
+  function clearMemberSession(message='লগআউট হয়েছে।') {
+    memberSessionToken = null;
+    memberSessionExpiry = null;
+    $('memberDashboard').classList.add('hidden');
+    $('memberLoginPanel').classList.remove('hidden');
+    $('memberLoginStatus').textContent = message;
+  }
+  async function verifyMemberSession() {
+    if (!memberSessionToken || !memberSessionExpiry || Date.now() >= memberSessionExpiry) {
+      clearMemberSession('সেশন শেষ হয়েছে। আবার লগইন করুন।');
+      return false;
+    }
+    const response = await fetch(MEMBER_API + '/api/member/me', {
+      headers: { authorization: 'Bearer ' + memberSessionToken }, cache: 'no-store'
+    });
+    const data = await response.json().catch(()=>({}));
+    if (!response.ok || !data.member) {
+      clearMemberSession(data.error || 'সেশন যাচাই করা যায়নি। আবার লগইন করুন।');
+      return false;
+    }
+    renderMemberDashboard(data.member);
+    return true;
+  }
+  function renderMemberDashboard(member) {
+    $('memberLoginPanel').classList.add('hidden');
+    $('memberDashboard').classList.remove('hidden');
+    $('memberWelcome').textContent = 'স্বাগতম, ' + (member.full_name || 'সদস্য');
+    $('memberSummary').innerHTML =
+      '<div class="stat"><small>সদস্য আইডি</small><strong>'+esc(member.member_code||'—')+'</strong></div>'+
+      '<div class="stat"><small>নাম</small><strong>'+esc(member.full_name||'—')+'</strong></div>'+
+      '<div class="stat"><small>মাসিক ইউনিট</small><strong>'+money(member.units||0)+'</strong></div>';
+  }
+  $('memberLoginForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    const button=$('memberLoginButton');
+    button.disabled=true;
+    $('memberLoginStatus').textContent='তথ্য যাচাই হচ্ছে…';
+    try {
+      const response=await fetch(MEMBER_API+'/api/member-login', {
+        method:'POST', headers:{'content-type':'application/json'},
+        body:JSON.stringify({email:$('memberLoginEmail').value.trim(),phone:$('memberLoginPhone').value.trim()}),
+        cache:'no-store'
+      });
+      const data=await response.json().catch(()=>({}));
+      if(!response.ok || !data.token) {
+        $('memberLoginStatus').textContent=data.error||'লগইন করা যায়নি।';
+        return;
+      }
+      memberSessionToken=data.token;
+      memberSessionExpiry=Date.now()+Math.max(0,Number(data.expires_in)||1800)*1000;
+      const valid=await verifyMemberSession();
+      if(valid) $('memberLoginStatus').textContent='লগইন সফল। সেশন ৩০ মিনিট কার্যকর থাকবে।';
+    } catch {
+      $('memberLoginStatus').textContent='সার্ভারের সঙ্গে সংযোগ করা যায়নি। পরে আবার চেষ্টা করুন।';
+    } finally { button.disabled=false; }
+  });
+  $('memberLogoutButton').addEventListener('click',()=>clearMemberSession());
+
   let currentUser = null;
   let isAdmin = false;
   let cachedMembers = [];
