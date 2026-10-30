@@ -139,6 +139,14 @@ label{display:block;font-weight:600;font-size:.92rem;margin:8px 0 4px}input,sele
       <div><label for="adminEmail">ইমেইল</label><input id="adminEmail" type="email" autocomplete="username" required></div>
       <div><label for="adminPassword">পাসওয়ার্ড</label><input id="adminPassword" type="password" autocomplete="current-password" required></div>
     </div><div class="actions"><button type="submit">লগইন</button><button class="secondary" type="button" onclick="logout()">লগআউট</button></div></form>
+    <div class="actions"><button class="secondary" type="button" id="forgotPasswordBtn">পাসওয়ার্ড ভুলে গেছেন?</button></div>
+    <div id="recoveryStatus" class="status" aria-live="polite"></div>
+    <div id="newPasswordPanel" class="hidden">
+      <h3>নতুন পাসওয়ার্ড সেট করুন</h3>
+      <label for="newAdminPassword">নতুন পাসওয়ার্ড (কমপক্ষে ১২ অক্ষর)</label>
+      <input id="newAdminPassword" type="password" minlength="12" autocomplete="new-password">
+      <div class="actions"><button type="button" id="saveNewPasswordBtn">পাসওয়ার্ড পরিবর্তন</button></div>
+    </div>
     <div id="loginStatus" class="status" aria-live="polite">লগইন করা নেই।</div>
   </div>
   <div class="panel"><h2>নিরাপত্তা সংক্রান্ত নোট</h2><p>ডেটাবেসের RLS নীতিই আসল অনুমতি নিয়ন্ত্রণ করে। শুধু এই পৃষ্ঠার Admin বোতাম লুকানো নিরাপত্তার বিকল্প নয়। Admin অনুমতি যাচাই না হওয়া পর্যন্ত পরিবর্তনের ফর্ম দেখানো হবে না।</p></div>
@@ -233,6 +241,30 @@ label{display:block;font-weight:600;font-size:.92rem;margin:8px 0 4px}input,sele
     $('depositsList').innerHTML=tableHtml(['সদস্য','পরিমাণ','তারিখ','নোট'],data.map(d=>[(cachedMembers.find(m=>m.id===d.member_id)||{}).full_name||'সদস্য',money(d.amount),d.deposit_date||'—',d.note||'—']));
   }
   window.loadInvestments=loadInvestments; window.loadPlans=loadPlans;
+  $('forgotPasswordBtn').addEventListener('click', async () => {
+    const email=$('adminEmail').value.trim();
+    if(!email){$('recoveryStatus').textContent='আগে Admin ইমেইল লিখুন, তারপর এই বোতামে চাপ দিন।';return;}
+    const {error}=await db.auth.resetPasswordForEmail(email,{redirectTo:window.location.origin});
+    $('recoveryStatus').textContent=error?'রিসেট ইমেইল পাঠানো যায়নি: '+error.message:'পাসওয়ার্ড রিসেটের লিংক আপনার ইমেইলে পাঠানো হয়েছে। ইমেইলের লিংক খুলে এই ওয়েবসাইটে ফিরে নতুন পাসওয়ার্ড দিন।';
+  });
+  $('saveNewPasswordBtn').addEventListener('click', async () => {
+    const password=$('newAdminPassword').value;
+    if(password.length<12){$('recoveryStatus').textContent='কমপক্ষে ১২ অক্ষরের পাসওয়ার্ড দিন।';return;}
+    const {error}=await db.auth.updateUser({password});
+    if(error){$('recoveryStatus').textContent='পাসওয়ার্ড পরিবর্তন হয়নি: '+error.message;return;}
+    $('newAdminPassword').value='';
+    $('newPasswordPanel').classList.add('hidden');
+    $('recoveryStatus').textContent='পাসওয়ার্ড সফলভাবে পরিবর্তন হয়েছে। এখন নতুন পাসওয়ার্ড দিয়ে লগইন করুন।';
+    await db.auth.signOut();
+    await checkAdmin();
+  });
+  db.auth.onAuthStateChange((event) => {
+    if(event==='PASSWORD_RECOVERY'){
+      $('newPasswordPanel').classList.remove('hidden');
+      $('recoveryStatus').textContent='নতুন পাসওয়ার্ড লিখে পরিবর্তন করুন।';
+      window.showSection('admin');
+    }
+  });
   $('loginForm').addEventListener('submit',async e=>{
     e.preventDefault();
     const {error}=await db.auth.signInWithPassword({email:$('adminEmail').value.trim(),password:$('adminPassword').value});
