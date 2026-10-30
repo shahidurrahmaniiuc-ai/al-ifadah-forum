@@ -47,6 +47,7 @@ header .wrap{max-width:1440px}
 @media(max-width:850px){.app-layout{grid-template-columns:1fr;gap:12px}.sidebar{position:relative;top:auto;min-height:0;padding:12px;border-radius:14px}.sidebar-brand{padding:4px 6px 12px}.sidebar-label,.sidebar-foot{display:none}.sidebar nav{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px;padding-top:10px}.sidebar .nav-item{padding:10px;font-size:.88rem}.content-area{width:100%}}
 @media(max-width:520px){header{padding:14px}.app-layout{padding-top:10px}.dashboard-cards{grid-template-columns:1fr}.dashboard-card{min-height:88px}.dashboard-welcome{padding:18px}.sidebar nav{grid-template-columns:repeat(2,minmax(0,1fr))}}
 
+.finance-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:14px 0}.finance-card{border:1px solid var(--line);border-radius:12px;background:#f8fbf8;padding:14px;min-width:0}.finance-card small{display:block;color:var(--muted);font-size:.82rem}.finance-card strong{display:block;color:var(--green);font-size:1.15rem;margin-top:5px;overflow-wrap:anywhere}.finance-card.advance strong{color:#176b43}.finance-card.due strong{color:#a52b2b}@media(max-width:700px){.finance-summary{grid-template-columns:repeat(2,minmax(0,1fr))}}
 </style>
 </head>
 <body>
@@ -123,6 +124,7 @@ header .wrap{max-width:1440px}
     <h2>বছরভিত্তিক মাসিক জমার হিসাব</h2>
     <div class="actions"><label for="depositYear">বছর নির্বাচন</label><select id="depositYear"></select><button type="button" onclick="loadDeposits()">রিফ্রেশ</button></div>
     <p class="muted">১ ইউনিট = ১,০০০ টাকা। একই মাসে একাধিক জমা থাকলে একত্রে হিসাব হবে।</p>
+    <div id="depositFinanceCards" class="finance-summary"></div>
     <div id="depositYearSummary" class="table-wrap"></div>
   </div>
   <div class="panel"><h2>জমার রেকর্ড</h2><div id="depositsList" class="table-wrap"></div></div>
@@ -295,7 +297,11 @@ header .wrap{max-width:1440px}
     });
     const totals=months.map(month=>yearData.filter(d=>String(d.deposit_date||'').slice(5,7)===month).reduce((sum,d)=>sum+Number(d.amount||0),0));
     const grand=totals.reduce((sum,n)=>sum+n,0);
-    rows.push(['সর্বমোট',...totals.map(n=>n?money(n/1000)+' / '+money(n)+'৳':'—'),money(grand/1000)+' ইউনিট',money(grand)+' টাকা','','']);
+    const expectedGrand=cachedMembers.reduce((sum,m)=>{const joined=new Date(m.created_at||now);const start=joined.getFullYear()<year?1:(joined.getFullYear()===year?joined.getMonth()+1:13);return sum+Math.max(0,currentMonth-start+1)*Number(m.units||1)*1000;},0);
+    const advanceGrand=rows.slice(0,cachedMembers.length).reduce((sum,row)=>{const actual=Number(String(row[row.length-4]||'0').replace(/[^0-9.-]/g,''))||0;return sum+Math.max(0,actual);},0);
+    const net=grand-expectedGrand, totalAdvance=Math.max(0,net), totalDue=Math.max(0,-net);
+    $('depositFinanceCards').innerHTML='<div class="finance-card"><small>নির্বাচিত বছরে মোট জমা</small><strong>'+money(grand)+' টাকা</strong></div><div class="finance-card"><small>নির্ধারিত জমা</small><strong>'+money(expectedGrand)+' টাকা</strong></div><div class="finance-card advance"><small>নিট অগ্রিম</small><strong>'+money(totalAdvance)+' টাকা</strong></div><div class="finance-card due"><small>নিট বকেয়া</small><strong>'+money(totalDue)+' টাকা</strong></div>';
+    rows.push(['সর্বমোট',...totals.map(n=>n?money(n/1000)+' / '+money(n)+'৳':'—'),money(grand/1000)+' ইউনিট',money(grand)+' টাকা',money(expectedGrand)+' টাকা',net>0?('অগ্রিম '+money(net)+' টাকা'):(net<0?('বকেয়া '+money(-net)+' টাকা'):'সমন্বিত')]);
     $('depositYearSummary').innerHTML=tableHtml(['সদস্য',...months.map((m,i)=>['জানু','ফেব্রু','মার্চ','এপ্রিল','মে','জুন','জুলাই','আগ','সেপ্টে','অক্টো','নভে','ডিসে'][i]),'জমা ইউনিট','মোট জমা','নির্ধারিত জমা','অগ্রিম / বকেয়া'],rows);
     $('depositCount').textContent=money(data.length);
     $('depositsList').innerHTML=tableHtml(['সদস্য','পরিমাণ','ইউনিট','তারিখ','নোট'],yearData.map(d=>[(cachedMembers.find(m=>m.id===d.member_id)||{}).full_name||'সদস্য',money(d.amount),money(Number(d.amount||0)/1000),d.deposit_date||'—',d.note||'—']));
