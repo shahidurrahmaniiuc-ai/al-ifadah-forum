@@ -82,7 +82,8 @@ label{display:block;font-weight:600;font-size:.92rem;margin:8px 0 4px}input,sele
   <div id="addDepositPanel" class="panel hidden"><h2>জমা যোগ (Admin)</h2>
     <form id="depositForm"><div class="grid">
       <div><label for="depositMember">সদস্য *</label><select id="depositMember" required></select></div>
-      <div><label for="depositAmount">পরিমাণ *</label><input id="depositAmount" type="number" min="0.01" step="0.01" required></div>
+      <div><label for="depositUnits">জমার ইউনিট সংখ্যা *</label><input id="depositUnits" type="number" min="1" step="1" value="1" required></div>
+      <div><label for="depositAmountDisplay">জমার টাকার পরিমাণ</label><input id="depositAmountDisplay" value="১,০০০ টাকা" readonly></div>
       <div><label for="depositDate">তারিখ</label><input id="depositDate" type="date"></div>
       <div><label for="depositNote">নোট</label><input id="depositNote" maxlength="500"></div>
     </div><div class="actions"><button type="submit">জমা সংরক্ষণ</button></div></form>
@@ -336,12 +337,15 @@ label{display:block;font-weight:600;font-size:.92rem;margin:8px 0 4px}input,sele
     e.target.reset();$('memberUnits').value='1';updateMemberMonthlyAmount();status('সদস্য যোগ হয়েছে। সদস্য আইডি: '+(created?.member_code||'তৈরি হয়েছে'));await loadMembers();
   });
   $('depositYear').addEventListener('change', async()=>{await loadDeposits();});
+  $('depositUnits').addEventListener('input',()=>{const units=Number($('depositUnits').value||0);$('depositAmountDisplay').value=Number.isInteger(units)&&units>0?money(units*1000)+' টাকা':'সঠিক ইউনিট সংখ্যা দিন';});
   $('depositForm').addEventListener('submit',async e=>{
     e.preventDefault(); if(!isAdmin)return;
-    const payload={member_id:$('depositMember').value,amount:Number($('depositAmount').value),deposit_date:$('depositDate').value||new Date().toISOString().slice(0,10),note:$('depositNote').value.trim()||null};
+    const units=Number($('depositUnits').value);
+    if(!Number.isInteger(units)||units<1){status('জমার ইউনিট ১ বা তার বেশি পূর্ণ সংখ্যা হতে হবে।',true);return;}
+    const payload={member_id:$('depositMember').value,amount:units*1000,deposit_date:$('depositDate').value||new Date().toISOString().slice(0,10),note:$('depositNote').value.trim()||null};
     const {error}=await db.from('deposits').insert(payload);
     if(error){status('জমা সংরক্ষণ হয়নি: '+error.message,true);return;}
-    e.target.reset();status('জমা সংরক্ষণ হয়েছে।');await loadDepositsInner();
+    e.target.reset();$('depositUnits').value='1';$('depositAmountDisplay').value=money(1000)+' টাকা';status('জমা সংরক্ষণ হয়েছে।');await loadDepositsInner();
   });
   $('investmentForm').addEventListener('submit',async e=>{
     e.preventDefault(); if(!isAdmin)return;
